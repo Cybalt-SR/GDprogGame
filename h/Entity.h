@@ -12,5 +12,5 @@ extern const struct EntityClass
     struct Entity (*CreateEntity)(int byPlayer);
     void (*AllActions[ACTIONCOUNT])(struct Entity *this, struct Entity *target);
     char *AllActionNames[ACTIONCOUNT];
-    void (*DisplayActions)(void);
+    void (*DisplayActions)(struct Entity *actioner);
 } Entity;
