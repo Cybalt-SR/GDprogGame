@@ -1,23 +1,4 @@
-static int PrintDivider()
-{
-    printf("================\n");
-    return 0;
-}
-static float AskFloat(char question[])
-{
-    float toReturn;
-    printf(question);
-    scanf("%f", &toReturn);
-    return toReturn;
-}
-static int AskInt(char question[])
-{
-    int toReturn;
-    printf(question);
-    scanf("%i", &toReturn);
-    return toReturn;
-}
-
+//Numerical
 static int GetDigits(int num)
 {
     if (num != 0)
@@ -36,6 +17,11 @@ static int GetDigits(int num)
     }
 }
 
+//Text Output Related
+static void PrintDivider()
+{
+    printf("================\n");
+}
 static char *GetLetterStr(char letter, int length)
 {
     char *str = malloc(length + 1);
@@ -43,7 +29,6 @@ static char *GetLetterStr(char letter, int length)
     str[length] = '\0';
     return str;
 }
-
 static void Display2ColValues(char label[], int left, int right)
 {
     char *labelgap = GetLetterStr(' ', 5 - sizeof(label));
@@ -59,9 +44,31 @@ static void Display2ColTitle(char label[], char left[], char right[])
     printf("%s : %s%s.%s%s\n", labelgap, left, leftgap, rightgap, right);
 }
 
+//Input Related
+static float AskFloat(char question[])
+{
+    float toReturn;
+    printf(question);
+    scanf("%f", &toReturn);
+    return toReturn;
+}
+static int AskInt(char question[])
+{
+    int toReturn;
+    printf(question);
+    scanf("%i", &toReturn);
+    return toReturn;
+}
+
+//Randomizers
 static int RandomRange(int min, int max){
-    srand(time(0));
+    srand(0);
     float normalizedRand = (float)rand() / (float)RAND_MAX;
     int range = max - min;
     return (int)((normalizedRand * range) + min);
+}
+static int CoinToss(){
+    srand(0);
+    float normalizedRand = (float)rand() / (float)RAND_MAX;
+    return normalizedRand > 0.5f ? 1 : 0;
 }

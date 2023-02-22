@@ -18,14 +18,14 @@ void Combat(EntityAction Player, EntityAction Enemy){
 int main()
 {
     // Phase 1
-    Entity Player = Entity.CreateEntity(1);
+    Entity Player = EntityUtil.CreateEntity(1);
     // Phase 2
-    Entity Enemy = Entity.CreateEntity(0);
+    Entity Enemy = EntityUtil.CreateEntity(0);
     // Phase 3
     while (Player.hp > 0 || Enemy.hp > 0)
     {
-        PrintDivider();
         DisplayVersus(&Player, &Enemy);
-        Combat(Entity.GetAction(&Player, 0), Entity.GetAction(&Enemy, 1));
+        Combat(EntityUtil.GetAction(&Player, 0), EntityUtil.GetAction(&Enemy, 1));
+        ClearScreen();
     }
 }
