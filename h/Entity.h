@@ -1,5 +1,6 @@
 #define ACTIONCOUNT 5
-#define MAGICACTIONID 3
+
+typedef void (*EntityAction)(struct Entity *this, struct Entity *target);
 
 struct Entity
 {

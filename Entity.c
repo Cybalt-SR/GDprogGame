@@ -101,7 +101,7 @@ static void DisplayActions(struct Entity *actioner)
     printf("Possible Actions : \n");
     for (int i = 0; i < ACTIONCOUNT; i++)
     {
-        if (i != MAGICACTIONID || (actioner->magic > 0))
+        if (Entity.AllActions[i] != &magicAtk || (actioner->magic > 0))
             printf("[%i] %s\n", i, Entity.AllActionNames[i]);
     }
 }

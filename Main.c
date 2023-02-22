@@ -11,6 +11,9 @@ void DisplayVersus(struct Entity *left, struct Entity *right)
     Display2ColValues("def   ", left->def, right->def);
     Display2ColValues("magic ", left->magic, right->magic);
 }
+void Combat(void (*Player)(struct Entity *this, struct Entity *target), void (*Enemy)(struct Entity *this, struct Entity *target)){
+    
+}
 
 int main()
 {
