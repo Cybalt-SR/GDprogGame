@@ -4,3 +4,4 @@
 *.json
 *.json
 *.exe
+.vscode/tasks.json
