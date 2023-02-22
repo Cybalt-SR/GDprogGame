@@ -4,24 +4,24 @@
 #include "h/Util.h"
 #include "h/Entity.h"
 
-static void punch(struct Entity *this, struct Entity *target)
+static void punch(Entity *this, Entity *target)
 {
 }
-static void kick(struct Entity *this, struct Entity *target)
+static void kick(Entity *this, Entity *target)
 {
 }
-static void throw(struct Entity * this, struct Entity *target)
+static void throw(Entity * this, Entity *target)
 {
 }
-static void magicAtk(struct Entity *this, struct Entity *target)
+static void magicAtk(Entity *this, Entity *target)
 {
 }
-static void block(struct Entity *this, struct Entity *target)
+static void block(Entity *this, Entity *target)
 {
 }
-static struct Entity new(int _hp, int _def, int _magic)
+static Entity new(int _hp, int _def, int _magic)
 {
-    return (struct Entity){
+    return (Entity){
         .hp = _hp,
         .def = _def,
         .magic = _magic};
@@ -71,9 +71,9 @@ static void AskAllocPoints(int min, int max, int *remainingPoints, int *stat_fie
 
     printf("\n");
 }
-static struct Entity CreateEntity(int byPlayer)
+static Entity CreateEntity(int byPlayer)
 {
-    struct Entity entity = Entity.new(0, 0, 0);
+    Entity entity = Entity.new(0, 0, 0);
 
     if (byPlayer)
     {
@@ -92,23 +92,47 @@ static struct Entity CreateEntity(int byPlayer)
 
     return entity;
 }
-static void *GetAction(int which)
+static EntityAction GetAction(Entity *actioner, int randomAuto)
 {
-    return *Entity.AllActions[which];
-}
-static void DisplayActions(struct Entity *actioner)
-{
-    printf("Possible Actions : \n");
-    for (int i = 0; i < ACTIONCOUNT; i++)
+    int canMagicAttack = 1;
+
+    if (randomAuto == 0)
     {
-        if (Entity.AllActions[i] != &magicAtk || (actioner->magic > 0))
-            printf("[%i] %s\n", i, Entity.AllActionNames[i]);
+        printf("Possible Actions : \n");
+        for (int i = 0; i < ACTIONCOUNT; i++)
+        {
+            if (Entity.AllActions[i] != &magicAtk || (actioner->magic > 0))
+                printf("[%i] %s\n", i, Entity.AllActionNames[i]);
+            else
+                canMagicAttack = 0;
+        }
+    }
+
+    int ActionId = (randomAuto == 0) ? AskInt("Action to do : ") : RandomRange(0, ACTIONCOUNT);
+
+    if (ActionId >= 0 && ActionId < ACTIONCOUNT)
+    {
+        if (Entity.AllActions[ActionId] == &magicAtk && canMagicAttack == 0)
+        {
+            if (randomAuto == 0)
+                printf("You do not have any charges for this. Please choose another.\n");
+            return GetAction(actioner, randomAuto);
+        }
+        else
+        {
+            return Entity.AllActions[ActionId];
+        }
+    }
+    else if (randomAuto == 0)
+    {
+        printf("Invalid choice. Please choose another.\n");
+        return GetAction(actioner, randomAuto);
     }
 }
-const struct EntityClass Entity = {
+const struct Entity Entity = {
     .new = &new,
     .AskAllocPoints = &AskAllocPoints,
     .CreateEntity = &CreateEntity,
     .AllActions = {&punch, &kick, &throw, &magicAtk, &block},
     .AllActionNames = {"Punch", "Kick", "Throw", "Magic Attack", "Block"},
-    .DisplayActions = &DisplayActions};
+    .GetAction = &GetAction};

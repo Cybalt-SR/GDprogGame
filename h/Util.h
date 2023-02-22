@@ -58,3 +58,10 @@ static void Display2ColTitle(char label[], char left[], char right[])
     char *rightgap = GetLetterStr(' ', 6 - sizeof(right));
     printf("%s : %s%s.%s%s\n", labelgap, left, leftgap, rightgap, right);
 }
+
+static int RandomRange(int min, int max){
+    srand(time(0));
+    float normalizedRand = (float)rand() / (float)RAND_MAX;
+    int range = max - min;
+    return (int)((normalizedRand * range) + min);
+}
