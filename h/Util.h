@@ -41,7 +41,7 @@ static void Display2ColTitle(char label[], char left[], char right[])
     char *labelgap = GetLetterStr(' ', 5 - sizeof(label));
     char *leftgap = GetLetterStr(' ', 6 - sizeof(left));
     char *rightgap = GetLetterStr(' ', 6 - sizeof(right));
-    printf("%s : %s%s.%s%s\n", labelgap, left, leftgap, rightgap, right);
+    printf("%s%s : %s%s.%s%s\n", label, labelgap, left, leftgap, rightgap, right);
 }
 
 //Input Related

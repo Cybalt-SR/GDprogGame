@@ -1,26 +1,37 @@
 #define ACTIONCOUNT 5
 
-typedef struct Entity
+struct Entity
 {
     int hp, def, magic;
-} Entity;
+    struct EntityEvent (*GetActionEvent)(struct Entity *actioner);
+};
 
-typedef struct EntityAction{
-    void (*Action)(Entity *this, Entity *target);
+struct EntityAction
+{
+    void (*Action)(struct Entity *this, struct Entity *target);
     char *name;
-} EntityAction;
+};
 
-extern const union EntityActionsType
+struct EntityEvent
 {
-    struct ActionsGroup{
+    struct Entity *enacter;
+    struct EntityAction *action;
+};
+
+typedef struct Entity Entity;
+typedef struct EntityAction EntityAction;
+typedef struct EntityEvent EntityEvent;
+
+extern const union EntityActions
+{
+    struct ActionsGroup
+    {
         EntityAction Punch, Kick, Throw, MagicAtk, Block;
-    }Specific;
+    } Specific;
     EntityAction All[ACTIONCOUNT];
-}EntityActions;
+} EntityActions;
 
-extern const struct EntityUtilType
+extern const struct EntityConstructor
 {
-    void  (*AskAllocPoints)(int min, int max, int *remainingPoints, int *stat_field, char stat_label[]);
-    Entity (*CreateEntity)(int byPlayer);
-    EntityAction (*GetAction)(Entity *actioner, int randomAuto);
-}EntityUtil;
+    Entity (*Create)(int byPlayer);
+} EntityConstructor;
