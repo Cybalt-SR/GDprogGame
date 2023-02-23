@@ -16,6 +16,6 @@ extern const struct EntityList
     void (*DisposeList)(EntityListElement value);
     void (*RemoveElement)(EntityListElement value);
     void (*Add)(EntityListElement list, EntityListElementValue value);
-    void (*GetTotal)(EntityListElement list, int *total);
+    int (*GetTotal)(EntityListElement list, int *total);
     void (*UpdateTick)(EntityListElement list);
 } EntityList;

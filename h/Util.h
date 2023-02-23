@@ -1,4 +1,9 @@
-//Numerical
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+// Numerical
 static int GetDigits(int num)
 {
     if (num != 0)
@@ -17,7 +22,7 @@ static int GetDigits(int num)
     }
 }
 
-//Text Output Related
+// Text Output Related
 static void PrintDivider()
 {
     printf("================\n");
@@ -44,7 +49,7 @@ static void Display2ColTitle(char label[], char left[], char right[])
     printf("%s%s : %s%s.%s%s\n", label, labelgap, left, leftgap, rightgap, right);
 }
 
-//Input Related
+// Input Related
 static float AskFloat(char question[])
 {
     float toReturn;
@@ -54,21 +59,44 @@ static float AskFloat(char question[])
 }
 static int AskInt(char question[])
 {
-    int toReturn;
     printf(question);
-    scanf("%i", &toReturn);
-    return toReturn;
+
+    int input, temp, status;
+
+    status = scanf("%d", &input);
+    while (status != 1)
+    {
+        while ((temp = getchar()) != EOF && temp != '\n')
+            ;
+        printf("[INVALID] Enter a number: ");
+        status = scanf("%d", &input);
+    }
+
+    return input;
 }
 
-//Randomizers
-static int RandomRange(int min, int max){
-    srand(0);
+// Randomizers
+static void SetSeed()
+{
+    static time_t t;
+    static int initializedThisExec;
+
+    if (initializedThisExec != 1)
+    {
+        initializedThisExec = 1;
+        srand((unsigned)time(&t));
+    }
+}
+static int RandomRange(int min, int max)
+{
+    SetSeed();
     float normalizedRand = (float)rand() / (float)RAND_MAX;
     int range = max - min;
-    return (int)((normalizedRand * range) + min);
+    return (int)((normalizedRand * (float)range) + (float)min);
 }
-static int CoinToss(){
-    srand(0);
+static int CoinToss()
+{
+    SetSeed();
     float normalizedRand = (float)rand() / (float)RAND_MAX;
     return normalizedRand > 0.5f ? 1 : 0;
 }

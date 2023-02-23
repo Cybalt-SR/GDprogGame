@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "h/Util.h"
 #include "h/EntityList.h"
 #include "h/Entity.h"
@@ -11,15 +8,31 @@
 
 static void Punch(Entity *this, Entity *target)
 {
+    printf("%s Punched!", this->name);
+
+    if (RandomRange(1, 10) > target->def)
+    {
+        int damage = RandomRange(1, 10);
+        target->hp -= damage;
+
+        printf("It hit %s for %i damage! \n", target->name, damage);
+    }
+    else
+    {
+        printf("It missed... \n");
+    }
 }
 static void Kick(Entity *this, Entity *target)
 {
+    printf("%s Kicked!\n", this->name);
 }
 static void Throw(Entity *this, Entity *target)
 {
+    printf("%s Throwed!\n", this->name);
 }
 static void MagicAtk(Entity *this, Entity *target)
 {
+    printf("%s Magic Attacked!\n", this->name);
 }
 static void Block(Entity *this, Entity *target)
 {
@@ -27,6 +40,8 @@ static void Block(Entity *this, Entity *target)
     defmod->modifier = RandomRange(1, 10);
     defmod->turns_left = 1;
     EntityList.Add(this->DefModifiers, defmod);
+
+    printf("%s Blocked! Increasing DEF by %i that turn!\n", this->name, defmod->modifier);
 }
 
 static EntityEvent GetActionEvent(Entity *actioner, int Automated)
@@ -39,7 +54,7 @@ static EntityEvent GetActionEvent(Entity *actioner, int Automated)
         printf("Possible Actions : \n");
         for (int i = 0; i < ACTIONCOUNT; i++)
         {
-            if (EntityActions.All[i].Action != EntityActions.Specific.MagicAtk.Action || (actioner->magic > 0))
+            if (EntityActions.All[i].Action != EntityActions.S.MagicAtk.Action || (actioner->magic > 0))
                 printf("[%i] %s\n", i, EntityActions.All[i].name);
             else
                 canMagicAttack = 0;
@@ -51,7 +66,7 @@ static EntityEvent GetActionEvent(Entity *actioner, int Automated)
 
     if (ActionId >= 0 && ActionId < ACTIONCOUNT)
     {
-        if (EntityActions.All[ActionId].Action == EntityActions.Specific.MagicAtk.Action && canMagicAttack == 0)
+        if (EntityActions.All[ActionId].Action == EntityActions.S.MagicAtk.Action && canMagicAttack == 0)
         {
             // Notify if not automated
             if (Automated == 0)
@@ -60,7 +75,7 @@ static EntityEvent GetActionEvent(Entity *actioner, int Automated)
         }
         else
         {
-            EntityEvent entityEvent = {.action = &EntityActions.All[ActionId], .enacter = actioner};
+            EntityEvent entityEvent = {.action = &EntityActions.All[ActionId], .doer = actioner};
             return entityEvent;
         }
     }
@@ -75,11 +90,11 @@ EntityEvent AskPlayerAction(Entity *actioner) { return GetActionEvent(actioner, 
 EntityEvent GetRandomAction(Entity *actioner) { return GetActionEvent(actioner, 1); }
 
 const union EntityActions EntityActions = {
-    .Specific.Block = {&Block, "Block"},
-    .Specific.Kick = {&Kick, "Kick"},
-    .Specific.MagicAtk = {&MagicAtk, "Magic Attack"},
-    .Specific.Throw = {&Throw, "Throw"},
-    .Specific.Punch = {&Punch, "Punch"},
+    .S.Block = {&Block, "Block", 0},
+    .S.Kick = {&Kick, "Kick", 1},
+    .S.MagicAtk = {&MagicAtk, "Magic Attack", 0},
+    .S.Throw = {&Throw, "Throw", 1},
+    .S.Punch = {&Punch, "Punch", 0},
 };
 
 //==============================
@@ -131,9 +146,9 @@ static void AskAllocPoints(int min, int max, int *remainingPoints, int *stat_fie
 
     free(reason);
 }
-static Entity Create(int byPlayer)
+static Entity Create(char name[], int byPlayer)
 {
-    Entity entity = {.hp = 0, .def = 0, .magic = 0};
+    Entity entity = {.name = name, .hp = 0, .def = 0, .magic = 0};
 
     if (byPlayer)
     {
@@ -157,13 +172,3 @@ static Entity Create(int byPlayer)
 }
 
 const struct EntityConstructor EntityConstructor = {.Create = &Create};
-
-//==============================
-// Entity Modifier Management
-//==============================
-
-static int GetActualDef(Entity *entity){
-    int baseDef = entity->def;
-
-
-}

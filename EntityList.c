@@ -38,10 +38,6 @@ EntityListElement CreateList(int size, ...)
 }
 void DisposeList(EntityListElement value)
 {
-    if (value->prev != NULL)
-    {
-        DisposeList(value->prev);
-    }
     if (value->next != NULL)
     {
         DisposeList(value->next);
@@ -60,6 +56,7 @@ void RemoveElement(EntityListElement value)
         value->next->prev = value->prev;
     }
 
+    free(value->value);
     free(value);
 }
 void Add(EntityListElement list, EntityListElementValue value)
@@ -90,25 +87,26 @@ void Add(EntityListElement list, EntityListElementValue value)
 
 void GetTotal(EntityListElement list, int *total)
 {
-    if (list->next != NULL)
+    if (list != NULL)
     {
         GetTotal(list->next, total);
-    }
 
-    *total += list->value->modifier;
+        *total += list->value->modifier;
+    }
 }
 void UpdateTick(EntityListElement list)
 {
-    if (list->prev != NULL)
-    {
-        UpdateTick(list->prev);
-    }
-    if (list->next != NULL)
+    if (list != NULL)
     {
         UpdateTick(list->next);
-    }
 
-    list->value->turns_left -= 1;
+        list->value->turns_left -= 1;
+
+        if (list->value->turns_left == 0)
+        {
+            RemoveElement(list);
+        }
+    }
 }
 
 const struct EntityList EntityList = {

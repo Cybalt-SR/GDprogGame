@@ -2,6 +2,7 @@
 
 struct Entity
 {
+    char *name;
     int hp, def, magic; //base values
     struct EntityEvent (*GetActionEvent)(struct Entity *actioner);
     EntityListElement DefModifiers;
@@ -11,11 +12,12 @@ struct EntityAction
 {
     void (*Action)(struct Entity *this, struct Entity *target);
     char *name;
+    int requiresCoinToss;
 };
 
 struct EntityEvent
 {
-    struct Entity *enacter;
+    struct Entity *doer;
     struct EntityAction *action;
 };
 
@@ -28,11 +30,11 @@ extern const union EntityActions
     struct ActionsGroup
     {
         EntityAction Punch, Kick, Throw, MagicAtk, Block;
-    } Specific;
+    } S;
     EntityAction All[ACTIONCOUNT];
 } EntityActions;
 
 extern const struct EntityConstructor
 {
-    Entity (*Create)(int byPlayer);
+    Entity (*Create)(char name[], int byPlayer);
 } EntityConstructor;
