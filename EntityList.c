@@ -90,10 +90,6 @@ void Add(EntityListElement list, EntityListElementValue value)
 
 void GetTotal(EntityListElement list, int *total)
 {
-    if (list->prev != NULL)
-    {
-        GetTotal(list->prev, total);
-    }
     if (list->next != NULL)
     {
         GetTotal(list->next, total);
