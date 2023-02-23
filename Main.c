@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "h/Util.h"
+#include "h/EntityList.h"
 #include "h/Entity.h"
 
 void DisplayVersus(Entity *left, Entity *right)
@@ -12,8 +13,7 @@ void DisplayVersus(Entity *left, Entity *right)
     Display2ColValues("magic ", left->magic, right->magic);
 }
 void Combat(EntityEvent PlayerEvent, EntityEvent EnemyEvent){
-    free(&PlayerEvent);
-    free(&EnemyEvent);
+    
 }
 
 int main()

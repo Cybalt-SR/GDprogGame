@@ -8,6 +8,7 @@
                 "-fdiagnostics-color=always",
                 "-g",
                 "${workspaceFolder}/Entity.c",
+                "${workspaceFolder}/EntityList.c",
                 "${workspaceFolder}/Main.c",
                 "-o",
                 "${fileDirname}\\Game.exe"

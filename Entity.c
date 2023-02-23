@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "h/Util.h"
+#include "h/EntityList.h"
 #include "h/Entity.h"
 
 //==============================
@@ -22,13 +23,17 @@ static void MagicAtk(Entity *this, Entity *target)
 }
 static void Block(Entity *this, Entity *target)
 {
+    EntityListElementValue defmod = (EntityListElementValue)malloc(sizeof(struct EntityListElementValue));
+    defmod->modifier = RandomRange(1, 10);
+    defmod->turns_left = 1;
+    EntityList.Add(this->DefModifiers, defmod);
 }
 
 static EntityEvent GetActionEvent(Entity *actioner, int Automated)
 {
     int canMagicAttack = 1;
 
-    //Display possible actions if the GET is not automated
+    // Display possible actions if the GET is not automated
     if (Automated == 0)
     {
         printf("Possible Actions : \n");
@@ -41,14 +46,14 @@ static EntityEvent GetActionEvent(Entity *actioner, int Automated)
         }
     }
 
-    //Ask manually if not automated
+    // Ask manually if not automated
     int ActionId = (Automated == 0) ? AskInt("Action to do : ") : RandomRange(0, ACTIONCOUNT);
 
     if (ActionId >= 0 && ActionId < ACTIONCOUNT)
     {
         if (EntityActions.All[ActionId].Action == EntityActions.Specific.MagicAtk.Action && canMagicAttack == 0)
         {
-            //Notify if not automated
+            // Notify if not automated
             if (Automated == 0)
                 printf("You do not have any charges for this. Please choose another.\n");
             return GetActionEvent(actioner, Automated);
@@ -59,7 +64,7 @@ static EntityEvent GetActionEvent(Entity *actioner, int Automated)
             return entityEvent;
         }
     }
-    else if (Automated == 0) //This only happens if it is not automated
+    else if (Automated == 0) // This only happens if it is not automated
     {
         printf("Invalid choice. Please choose another.\n");
         return GetActionEvent(actioner, Automated);
@@ -90,25 +95,23 @@ static void AskAllocPoints(int min, int max, int *remainingPoints, int *stat_fie
 
     int thereIsReason = 0;
     char *reason;
+    reason = (char *)malloc(18);
     if (pointsAlloc < min)
     {
         pointsAlloc = min;
-        free(reason);
-        reason = "capped at minimum";
+        strcpy(reason, "capped at minimum");
         thereIsReason = 1;
     }
     if (pointsAlloc > max)
     {
         pointsAlloc = max;
-        free(reason);
-        reason = "capped at maximum";
+        strcpy(reason, "capped at maximum");
         thereIsReason = 1;
     }
     if (pointsAlloc > *remainingPoints)
     {
         pointsAlloc = *remainingPoints;
-        free(reason);
-        reason = "not enough points";
+        strcpy(reason, "not enough points");
         thereIsReason = 1;
     }
 
@@ -125,6 +128,8 @@ static void AskAllocPoints(int min, int max, int *remainingPoints, int *stat_fie
     }
 
     printf("\n");
+
+    free(reason);
 }
 static Entity Create(int byPlayer)
 {
@@ -152,3 +157,13 @@ static Entity Create(int byPlayer)
 }
 
 const struct EntityConstructor EntityConstructor = {.Create = &Create};
+
+//==============================
+// Entity Modifier Management
+//==============================
+
+static int GetActualDef(Entity *entity){
+    int baseDef = entity->def;
+
+
+}

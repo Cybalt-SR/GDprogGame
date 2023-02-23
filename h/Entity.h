@@ -2,8 +2,9 @@
 
 struct Entity
 {
-    int hp, def, magic;
+    int hp, def, magic; //base values
     struct EntityEvent (*GetActionEvent)(struct Entity *actioner);
+    EntityListElement DefModifiers;
 };
 
 struct EntityAction

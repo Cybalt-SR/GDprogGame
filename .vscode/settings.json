@@ -4,6 +4,10 @@
         "cstring": "c",
         "xmemory": "c",
         "xstring": "c",
-        "xutility": "c"
+        "xutility": "c",
+        "util.h": "c",
+        "entitylist.h": "c",
+        "stdio.h": "c",
+        "stdarg.h": "c"
     }
 }
