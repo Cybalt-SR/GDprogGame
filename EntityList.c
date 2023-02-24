@@ -1,42 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
+#include "h/Util.h"
 #include "h/EntityList.h"
 
-EntityListElement CreateList(int size, ...)
-{
-    va_list list;
-    va_start(list, size);
-
-    EntityListElement First = NULL;
-    EntityListElement prev = NULL;
-
-    for (size_t i = 0; i < size; i++)
-    {
-        EntityListElement temp = (EntityListElement)malloc(sizeof(struct EntityListElement));
-        temp->value = va_arg(list, EntityListElementValue);
-
-        if (First == NULL)
-        {
-            First = temp;
-        }
-
-        temp->prev = prev;
-        temp->next = NULL;
-
-        if (prev != NULL)
-        {
-            prev->next = temp;
-        }
-
-        prev = temp;
-    }
-
-    va_end(list);
-
-    return First;
-}
-void DisposeList(EntityListElement value)
+static void DisposeList(EntityListElement value)
 {
     if (value->next != NULL)
     {
@@ -45,68 +10,102 @@ void DisposeList(EntityListElement value)
 
     free(value);
 }
-void RemoveElement(EntityListElement value)
+static void RemoveElement(EntityListElement element)
 {
-    if (value->prev != NULL)
+    if (element->prev != NULL)
     {
-        value->prev->next = value->next;
+        if (isDebugging)
+            printf("|\n stiched %u to %u |", element->next, element->prev);
+
+        element->prev->next = element->next;
     }
-    if (value->next != NULL)
+    if (element->next != NULL)
     {
-        value->next->prev = value->prev;
+        if (isDebugging)
+            printf("|\n stiched %u to %u |", element->prev, element->next);
+
+        element->next->prev = element->prev;
     }
 
-    free(value->value);
-    free(value);
+    free(element->value);
+    free(element);
 }
-void Add(EntityListElement list, EntityListElementValue value)
+static void Add(EntityListElement list, int modValue, int duration)
 {
-    EntityListElement temp = (EntityListElement)malloc(sizeof(struct EntityListElement));
-    temp->value = value;
+    EntityListElement temp = (EntityListElement)malloc(sizeof(EntityListElement));
+    EntityListElementValue value = (EntityListElementValue)malloc(sizeof(EntityListElementValue));
+    value->modifier = modValue;
+    value->turns_left = duration;
 
+    temp->value = value;
+    temp->isListHead = 0;
     temp->prev = NULL;
     temp->next = NULL;
 
-    if (list == NULL)
-    {
-        list = temp;
-    }
-    else
-    {
-        EntityListElement end = list;
+    if (isDebugging)
+        printf("\n| Attaching %u to %u |", temp, list);
 
-        while (end->next != NULL)
-        {
-            end = end->next;
-        }
+    EntityListElement end = list;
 
-        temp->prev = end;
-        end->next = temp;
+    while (end->next != NULL)
+    {
+        end = end->next;
     }
+
+    temp->prev = end;
+    end->next = temp;
 }
 
-void GetTotal(EntityListElement list, int *total)
+static void GetTotal(EntityListElement list, int *total)
 {
+    if (isDebugging)
+        printf("\n| Tried to add to %i from %u |", *total, list);
+
     if (list != NULL)
     {
         GetTotal(list->next, total);
-
         *total += list->value->modifier;
     }
+
+    if (isDebugging)
+        printf("| New total after add: %i |", *total);
 }
-void UpdateTick(EntityListElement list)
+static void UpdateTick(EntityListElement list)
 {
     if (list != NULL)
     {
+        if (isDebugging)
+            printf("\n| Updating %u |", list);
+
         UpdateTick(list->next);
 
         list->value->turns_left -= 1;
 
-        if (list->value->turns_left == 0)
+        if (list->value->turns_left == 0 && list->isListHead != 1)
         {
+            if (isDebugging)
+                printf("\n| Deleting %u |", list);
+
             RemoveElement(list);
         }
     }
+
+    if (isDebugging)
+        printf("\n");
+}
+static EntityListElement CreateList()
+{
+    EntityListElement temp = (EntityListElement)malloc(sizeof(EntityListElement));
+    EntityListElementValue value = (EntityListElementValue)malloc(sizeof(EntityListElementValue));
+    value->modifier = 0;
+    value->turns_left = 0;
+
+    temp->isListHead = 1;
+    temp->value = value;
+    temp->next = NULL;
+    temp->prev = NULL;
+
+    return temp;
 }
 
 const struct EntityList EntityList = {

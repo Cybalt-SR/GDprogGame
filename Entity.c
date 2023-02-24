@@ -8,7 +8,7 @@
 
 static void Punch(Entity *this, Entity *target)
 {
-    printf("%s Punched!", this->name);
+    printf("%s Punched! ", this->name);
 
     if (RandomRange(1, 10) > target->def)
     {
@@ -24,24 +24,67 @@ static void Punch(Entity *this, Entity *target)
 }
 static void Kick(Entity *this, Entity *target)
 {
-    printf("%s Kicked!\n", this->name);
+    printf("%s Kicked! ", this->name);
+
+    if (RandomRange(2, 9) > target->def)
+    {
+        int damage = RandomRange(1, 10) * 2;
+        target->hp -= damage;
+
+        int defMod = RandomRange(-5, 0);
+        EntityList.Add(target->DefModifiers, defMod, 2);
+
+        printf("It hit %s for %i damage, decreasing %s def by %i until next turn! \n", target->name, damage, target->pronoun, defMod);
+    }
+    else
+    {
+        printf("It missed... \n");
+    }
 }
 static void Throw(Entity *this, Entity *target)
 {
-    printf("%s Throwed!\n", this->name);
+    printf("%s Throwed! ", this->name);
+    int actualDef = target->def;
+    EntityList.GetTotal(this->DefModifiers, &actualDef);
+
+    if (RandomRange(2, 9) > actualDef)
+    {
+        int damage = RandomRange(1, 5);
+        target->hp -= damage;
+
+        int targetDefMod = RandomRange(-10, -1);
+        int thisDefMod = RandomRange(-3, -1);
+        EntityList.Add(target->DefModifiers, targetDefMod, 2);
+        EntityList.Add(this->DefModifiers, thisDefMod, 2);
+
+        printf("It hit %s for %i damage, decreasing %s def by %i and %s def by %i until next turn! \n", target->name, damage, target->pronoun, targetDefMod, this->pronoun, thisDefMod);
+    }
+    else
+    {
+        printf("It missed... \n");
+    }
 }
 static void MagicAtk(Entity *this, Entity *target)
 {
-    printf("%s Magic Attacked!\n", this->name);
+    printf("%s Magic Attacked! ", this->name);
+
+    if (RandomRange(1, 10) > target->def)
+    {
+        int damage = RandomRange(1, 10);
+        target->hp -= damage;
+
+        printf("It hit %s for %i damage! \n", target->name, damage);
+    }
+    else
+    {
+        printf("It missed... \n");
+    }
 }
 static void Block(Entity *this, Entity *target)
 {
-    EntityListElementValue defmod = (EntityListElementValue)malloc(sizeof(struct EntityListElementValue));
-    defmod->modifier = RandomRange(1, 10);
-    defmod->turns_left = 1;
-    EntityList.Add(this->DefModifiers, defmod);
-
-    printf("%s Blocked! Increasing DEF by %i that turn!\n", this->name, defmod->modifier);
+    int defMod = RandomRange(1, 10);
+    EntityList.Add(this->DefModifiers, defMod, 1);
+    printf("%s Blocked! Increasing DEF by %i that turn!\n", this->name, defMod);
 }
 
 static EntityEvent GetActionEvent(Entity *actioner, int Automated)
@@ -146,26 +189,32 @@ static void AskAllocPoints(int min, int max, int *remainingPoints, int *stat_fie
 
     free(reason);
 }
-static Entity Create(char name[], int byPlayer)
+static Entity *Create(char name[], char pronoun[], int byPlayer)
 {
-    Entity entity = {.name = name, .hp = 0, .def = 0, .magic = 0};
+    Entity *entity = (Entity *)malloc(sizeof(Entity));
+    entity->name = name;
+    entity->pronoun = pronoun;
+    entity->hp = 0;
+    entity->def = 0;
+    entity->magic = 0;
+    entity->DefModifiers = EntityList.CreateList();
 
     if (byPlayer)
     {
         int remainingPoints = 10;
-        AskAllocPoints(1, 10, &remainingPoints, &entity.hp, "Health (1 point = 10 hp)");
-        entity.hp *= 10;
-        AskAllocPoints(0, 10, &remainingPoints, &entity.def, "Defense");
-        AskAllocPoints(0, 10, &remainingPoints, &entity.magic, "Magic");
+        AskAllocPoints(1, 10, &remainingPoints, &entity->hp, "Health (1 point = 10 hp)");
+        entity->hp *= 10;
+        AskAllocPoints(0, 10, &remainingPoints, &entity->def, "Defense");
+        AskAllocPoints(0, 10, &remainingPoints, &entity->magic, "Magic");
 
-        entity.GetActionEvent = &AskPlayerAction;
+        entity->GetActionEvent = &AskPlayerAction;
     }
     else
     {
-        entity.hp = RandomRange(10, 50);
-        entity.def = RandomRange(1, 5);
-        entity.magic = RandomRange(0, 3);
-        entity.GetActionEvent = &GetRandomAction;
+        entity->hp = RandomRange(10, 50);
+        entity->def = RandomRange(1, 5);
+        entity->magic = RandomRange(0, 3);
+        entity->GetActionEvent = &GetRandomAction;
     }
 
     return entity;

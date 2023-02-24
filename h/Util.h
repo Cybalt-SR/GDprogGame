@@ -3,6 +3,9 @@
 #include <string.h>
 #include <time.h>
 
+//This variable is strictly used for enabling debug printf's
+static int isDebugging = 1;
+
 // Numerical
 static int GetDigits(int num)
 {

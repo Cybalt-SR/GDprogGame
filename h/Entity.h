@@ -3,6 +3,7 @@
 struct Entity
 {
     char *name;
+    char *pronoun;
     int hp, def, magic; //base values
     struct EntityEvent (*GetActionEvent)(struct Entity *actioner);
     EntityListElement DefModifiers;
@@ -36,5 +37,5 @@ extern const union EntityActions
 
 extern const struct EntityConstructor
 {
-    Entity (*Create)(char name[], int byPlayer);
+    Entity *(*Create)(char name[], char pronoun[], int byPlayer);
 } EntityConstructor;
