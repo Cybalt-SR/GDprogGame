@@ -45,7 +45,7 @@ static void Throw(Entity *this, Entity *target)
 {
     printf("%s Throwed! ", this->name);
     int actualDef = target->def;
-    EntityList.GetTotal(this->DefModifiers, &actualDef);
+    EntityList.GetTotal(target->DefModifiers, &actualDef);
 
     if (RandomRange(2, 9) > actualDef)
     {

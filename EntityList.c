@@ -15,25 +15,27 @@ static void RemoveElement(EntityListElement element)
     if (element->prev != NULL)
     {
         if (isDebugging)
-            printf("|\n stiched %u to %u |", element->next, element->prev);
+            printDebugText("| stiched %u to %u |", element->next, element->prev);
 
         element->prev->next = element->next;
     }
     if (element->next != NULL)
     {
         if (isDebugging)
-            printf("|\n stiched %u to %u |", element->prev, element->next);
+            printDebugText("| stiched %u to %u |", element->prev, element->next);
 
         element->next->prev = element->prev;
     }
 
-    free(element->value);
+    if (isDebugging)
+        printDebugText("\n");
+
     free(element);
 }
 static void Add(EntityListElement list, int modValue, int duration)
 {
-    EntityListElement temp = (EntityListElement)malloc(sizeof(EntityListElement));
-    EntityListElementValue value = (EntityListElementValue)malloc(sizeof(EntityListElementValue));
+    EntityListElement temp = (EntityListElement)malloc(sizeof(struct EntityListElement));
+    EntityListElementValue value = (EntityListElementValue)malloc(sizeof(struct EntityListElementValue));
     value->modifier = modValue;
     value->turns_left = duration;
 
@@ -43,7 +45,7 @@ static void Add(EntityListElement list, int modValue, int duration)
     temp->next = NULL;
 
     if (isDebugging)
-        printf("\n| Attaching %u to %u |", temp, list);
+        printDebugText("| Attaching %u to %u |\n", temp, list);
 
     EntityListElement end = list;
 
@@ -52,51 +54,56 @@ static void Add(EntityListElement list, int modValue, int duration)
         end = end->next;
     }
 
-    temp->prev = end;
     end->next = temp;
+    temp->prev = end;
 }
 
 static void GetTotal(EntityListElement list, int *total)
 {
-    if (isDebugging)
-        printf("\n| Tried to add to %i from %u |", *total, list);
-
     if (list != NULL)
     {
+        if (isDebugging)
+            printDebugText("| Tried to add to %i from %u |\n", *total, list);
+
         GetTotal(list->next, total);
         *total += list->value->modifier;
     }
-
-    if (isDebugging)
-        printf("| New total after add: %i |", *total);
+    else
+    {
+        if (isDebugging)
+            printDebugText("| Tried to add to %i from NULL |\n", *total);
+    }
 }
 static void UpdateTick(EntityListElement list)
 {
     if (list != NULL)
     {
         if (isDebugging)
-            printf("\n| Updating %u |", list);
+            printDebugText("| Updating %u |", list);
 
         UpdateTick(list->next);
 
-        list->value->turns_left -= 1;
-
-        if (list->value->turns_left == 0 && list->isListHead != 1)
+        if (list->isListHead != 1)
         {
-            if (isDebugging)
-                printf("\n| Deleting %u |", list);
+            list->value->turns_left -= 1;
 
-            RemoveElement(list);
+            if (list->value->turns_left == 0)
+            {
+                if (isDebugging)
+                    printDebugText("| Deleting %u |", list);
+
+                RemoveElement(list);
+            }
         }
     }
 
     if (isDebugging)
-        printf("\n");
+        printDebugText("\n");
 }
 static EntityListElement CreateList()
 {
-    EntityListElement temp = (EntityListElement)malloc(sizeof(EntityListElement));
-    EntityListElementValue value = (EntityListElementValue)malloc(sizeof(EntityListElementValue));
+    EntityListElement temp = (EntityListElement)malloc(sizeof(struct EntityListElement));
+    EntityListElementValue value = (EntityListElementValue)malloc(sizeof(struct EntityListElementValue));
     value->modifier = 0;
     value->turns_left = 0;
 

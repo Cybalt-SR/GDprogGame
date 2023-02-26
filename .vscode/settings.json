@@ -8,6 +8,7 @@
         "util.h": "c",
         "entitylist.h": "c",
         "stdio.h": "c",
-        "stdarg.h": "c"
+        "stdarg.h": "c",
+        "string.h": "c"
     }
 }

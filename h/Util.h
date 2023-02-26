@@ -1,7 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 #include <time.h>
+
+#define ANSI_COLOR_RED     "\033[31m"
+#define ANSI_COLOR_GREEN   "\033[32m"
+#define ANSI_COLOR_YELLOW  "\033[33m"
+#define ANSI_COLOR_BLUE    "\033[34m"
+#define ANSI_COLOR_MAGENTA "\033[35m"
+#define ANSI_COLOR_CYAN    "\033[36m"
+#define ANSI_COLOR_RESET   "\033[0m"
 
 //This variable is strictly used for enabling debug printf's
 static int isDebugging = 1;
@@ -26,6 +35,23 @@ static int GetDigits(int num)
 }
 
 // Text Output Related
+static void printDebugText(char text[], ...){
+    va_list(args);
+    
+    char color[] = ANSI_COLOR_YELLOW;
+    char colorTerminator[] = ANSI_COLOR_RESET;
+    char *newStr = (char*)malloc(100 * sizeof(char));
+    strcpy(newStr, "");
+    strcat(newStr, color);
+    strcat(newStr, text);
+    strcat(newStr, colorTerminator);
+
+    va_start(args, text);
+    vprintf(newStr, args);
+    va_end(args);
+
+    free(newStr);
+}
 static void PrintDivider()
 {
     printf("================\n");
@@ -39,16 +65,16 @@ static char *GetLetterStr(char letter, int length)
 }
 static void Display2ColValues(char label[], int left, int right)
 {
-    char *labelgap = GetLetterStr(' ', 5 - sizeof(label));
-    char *leftgap = GetLetterStr(' ', 5 - GetDigits(left));
-    char *rightgap = GetLetterStr(' ', 5 - GetDigits(right));
+    char *labelgap = GetLetterStr(' ', 6 - strlen(label));
+    char *leftgap = GetLetterStr(' ', 6 - GetDigits(left));
+    char *rightgap = GetLetterStr(' ', 6 - GetDigits(right));
     printf("%s%s : %i%s.%s%i\n", label, labelgap, left, leftgap, rightgap, right);
 }
 static void Display2ColTitle(char label[], char left[], char right[])
 {
-    char *labelgap = GetLetterStr(' ', 5 - sizeof(label));
-    char *leftgap = GetLetterStr(' ', 6 - sizeof(left));
-    char *rightgap = GetLetterStr(' ', 6 - sizeof(right));
+    char *labelgap = GetLetterStr(' ', 6 - strlen(label));
+    char *leftgap = GetLetterStr(' ', 6 - strlen(left));
+    char *rightgap = GetLetterStr(' ', 6 - strlen(right));
     printf("%s%s : %s%s.%s%s\n", label, labelgap, left, leftgap, rightgap, right);
 }
 
