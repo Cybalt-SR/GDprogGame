@@ -151,26 +151,21 @@ static void AskAllocPoints(int min, int max, int *remainingPoints, int *stat_fie
     Print(" (%i remaining) : ", Colors.Reset, *remainingPoints);
     int pointsAlloc = AskInt("");
 
-    int thereIsReason = 0;
-    char *reason;
-    reason = (char *)malloc(18);
+    char *reason = NULL;
     if (pointsAlloc < min)
     {
         pointsAlloc = min;
-        strcpy(reason, "capped at minimum");
-        thereIsReason = 1;
+        reason = "capped at minimum";
     }
     if (pointsAlloc > max)
     {
         pointsAlloc = max;
-        strcpy(reason, "capped at maximum");
-        thereIsReason = 1;
+        reason = "capped at maximum";
     }
     if (pointsAlloc > *remainingPoints)
     {
         pointsAlloc = *remainingPoints;
-        strcpy(reason, "not enough points");
-        thereIsReason = 1;
+        reason = "not enough points";
     }
 
     *remainingPoints -= pointsAlloc;
@@ -178,7 +173,7 @@ static void AskAllocPoints(int min, int max, int *remainingPoints, int *stat_fie
     Print("Allocated %i points to ", Colors.Reset, pointsAlloc);
     Print(stat_label, Colors.Reset);
 
-    if (thereIsReason)
+    if (reason != NULL)
     {
         Print(" (", Colors.Reset);
         Print(reason, Colors.Reset);
@@ -186,8 +181,6 @@ static void AskAllocPoints(int min, int max, int *remainingPoints, int *stat_fie
     }
 
     Print("\n", Colors.Reset);
-
-    free(reason);
 }
 static Entity *Create(char name[], char pronoun[], int byPlayer)
 {
