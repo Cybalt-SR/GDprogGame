@@ -1,7 +1,7 @@
-#include "h/Util.h"
+#include "h/u_stdio.h"
 #include "h/EntityList.h"
 
-static void DisposeList(EntityListElement value)
+static void DisposeList(ListElement value)
 {
     if (value->next != NULL)
     {
@@ -10,7 +10,7 @@ static void DisposeList(EntityListElement value)
 
     free(value);
 }
-static void RemoveElement(EntityListElement element)
+static void RemoveElement(ListElement element)
 {
     if (element->prev != NULL)
     {
@@ -29,10 +29,10 @@ static void RemoveElement(EntityListElement element)
 
     free(element);
 }
-static void Add(EntityListElement list, int modValue, int duration)
+static void Add(ListElement list, int modValue, int duration)
 {
-    EntityListElement temp = (EntityListElement)malloc(sizeof(struct EntityListElement));
-    EntityListElementValue value = (EntityListElementValue)malloc(sizeof(struct EntityListElementValue));
+    ListElement temp = (ListElement)malloc(sizeof(struct ListElement));
+    ModifierElementValue value = (ModifierElementValue)malloc(sizeof(struct ModifierElementValue));
     value->modifier = modValue;
     value->turns_left = duration;
 
@@ -43,7 +43,7 @@ static void Add(EntityListElement list, int modValue, int duration)
 
     printDebugText("| Attaching %u to %u |\n", temp, list);
 
-    EntityListElement end = list;
+    ListElement end = list;
 
     while (end->next != NULL)
     {
@@ -54,21 +54,21 @@ static void Add(EntityListElement list, int modValue, int duration)
     temp->prev = end;
 }
 
-static void GetTotal(EntityListElement list, int *total)
+static void GetTotal(ListElement list, int *total)
 {
     if (list != NULL)
     {
         printDebugText("| Tried to add to %i from %u |\n", *total, list);
 
         GetTotal(list->next, total);
-        *total += list->value->modifier;
+        *total += ((ModifierElementValue)list->value)->modifier;
     }
     else
     {
         printDebugText("| Tried to add to %i from NULL |\n", *total);
     }
 }
-static void UpdateTick(EntityListElement list)
+static void UpdateTick(ListElement list)
 {
     if (list != NULL)
     {
@@ -78,9 +78,9 @@ static void UpdateTick(EntityListElement list)
 
         if (list->isListHead != 1)
         {
-            list->value->turns_left -= 1;
+            ((ModifierElementValue)list->value)->turns_left -= 1;
 
-            if (list->value->turns_left == 0)
+            if (((ModifierElementValue)list->value)->turns_left == 0)
             {
                 printDebugText("| Deleting %u |", list);
 
@@ -91,10 +91,10 @@ static void UpdateTick(EntityListElement list)
 
     printDebugText("\n");
 }
-static EntityListElement CreateList()
+static ListElement CreateList()
 {
-    EntityListElement temp = (EntityListElement)malloc(sizeof(struct EntityListElement));
-    EntityListElementValue value = (EntityListElementValue)malloc(sizeof(struct EntityListElementValue));
+    ListElement temp = (ListElement)malloc(sizeof(struct ListElement));
+    ModifierElementValue value = (ModifierElementValue)malloc(sizeof(struct ModifierElementValue));
     value->modifier = 0;
     value->turns_left = 0;
 

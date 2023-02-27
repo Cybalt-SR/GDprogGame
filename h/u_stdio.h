@@ -28,7 +28,7 @@ static const struct Colors
     .Reset = "\033[0m"};
 
 //==============================
-// Prints
+// Print Related
 //==============================
 
 static char *GetLetterStr(char letter, int length)

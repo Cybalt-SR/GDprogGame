@@ -6,7 +6,7 @@ struct Entity
     char *pronoun;
     int hp, def, magic; //base values
     struct EntityEvent (*GetActionEvent)(struct Entity *actioner);
-    EntityListElement DefModifiers;
+    ListElement DefModifiers;
 };
 
 struct EntityAction

@@ -1,22 +1,24 @@
-typedef struct EntityListElementValue
+typedef struct ListElement
 {
-    int modifier, turns_left;
-} *EntityListElementValue;
-
-typedef struct EntityListElement
-{
-    EntityListElementValue value;
+    void *value;
     int isListHead;
-    struct EntityListElement *prev;
-    struct EntityListElement *next;
-} *EntityListElement;
+    struct ListElement *prev;
+    struct ListElement *next;
+} *ListElement;
 
 extern const struct EntityList
 {
-    EntityListElement (*CreateList)(void);
-    void (*DisposeList)(EntityListElement value);
-    void (*RemoveElement)(EntityListElement value);
-    void (*Add)(EntityListElement list, int modValue, int duration);
-    void (*GetTotal)(EntityListElement list, int *total);
-    void (*UpdateTick)(EntityListElement list);
+    ListElement (*CreateList)(void);
+    void (*DisposeList)(ListElement value);
+    void (*RemoveElement)(ListElement value);
+    void (*Add)(ListElement list, int modValue, int duration);
+    void (*GetTotal)(ListElement list, int *total);
+    void (*UpdateTick)(ListElement list);
 } EntityList;
+
+//Element Types
+
+typedef struct ModifierElementValue
+{
+    int modifier, turns_left;
+} *ModifierElementValue;
