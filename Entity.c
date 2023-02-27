@@ -8,23 +8,23 @@
 
 static void Punch(Entity *this, Entity *target)
 {
-    printf("%s Punched! ", this->name);
+    Print("%s Punched! ", Colors.Cyan, this->name);
 
     if (RandomRange(1, 10) > target->def)
     {
         int damage = RandomRange(1, 10);
         target->hp -= damage;
 
-        printf("It hit %s for %i damage! \n", target->name, damage);
+        Print("It hit %s for %i damage! \n", Colors.Cyan, target->name, damage);
     }
     else
     {
-        printf("It missed... \n");
+        Print("It missed... \n", Colors.Cyan);
     }
 }
 static void Kick(Entity *this, Entity *target)
 {
-    printf("%s Kicked! ", this->name);
+    Print("%s Kicked! ", Colors.Cyan, this->name);
 
     if (RandomRange(2, 9) > target->def)
     {
@@ -34,16 +34,16 @@ static void Kick(Entity *this, Entity *target)
         int defMod = RandomRange(-5, 0);
         EntityList.Add(target->DefModifiers, defMod, 2);
 
-        printf("It hit %s for %i damage, decreasing %s def by %i until next turn! \n", target->name, damage, target->pronoun, defMod);
+        Print("It hit %s for %i damage, decreasing %s def by %i until next turn! \n", Colors.Cyan, target->name, damage, target->pronoun, defMod);
     }
     else
     {
-        printf("It missed... \n");
+        Print("It missed... \n", Colors.Cyan);
     }
 }
 static void Throw(Entity *this, Entity *target)
 {
-    printf("%s Throwed! ", this->name);
+    Print("%s Throwed! ", Colors.Cyan, this->name);
     int actualDef = target->def;
     EntityList.GetTotal(target->DefModifiers, &actualDef);
 
@@ -57,34 +57,34 @@ static void Throw(Entity *this, Entity *target)
         EntityList.Add(target->DefModifiers, targetDefMod, 2);
         EntityList.Add(this->DefModifiers, thisDefMod, 2);
 
-        printf("It hit %s for %i damage, decreasing %s def by %i and %s def by %i until next turn! \n", target->name, damage, target->pronoun, targetDefMod, this->pronoun, thisDefMod);
+        Print("It hit %s for %i damage, decreasing %s def by %i and %s def by %i until next turn! \n", Colors.Cyan, target->name, damage, target->pronoun, targetDefMod, this->pronoun, thisDefMod);
     }
     else
     {
-        printf("It missed... \n");
+        Print("It missed... \n", Colors.Cyan);
     }
 }
 static void MagicAtk(Entity *this, Entity *target)
 {
-    printf("%s Magic Attacked! ", this->name);
+    Print("%s Magic Attacked! ", Colors.Cyan, this->name);
 
     if (RandomRange(1, 10) > target->def)
     {
         int damage = RandomRange(1, 10);
         target->hp -= damage;
 
-        printf("It hit %s for %i damage! \n", target->name, damage);
+        Print("It hit %s for %i damage! \n", Colors.Cyan, target->name, damage);
     }
     else
     {
-        printf("It missed... \n");
+        Print("It missed... \n", Colors.Cyan);
     }
 }
 static void Block(Entity *this, Entity *target)
 {
     int defMod = RandomRange(1, 10);
     EntityList.Add(this->DefModifiers, defMod, 1);
-    printf("%s Blocked! Increasing DEF by %i that turn!\n", this->name, defMod);
+    Print("%s Blocked! Increasing DEF by %i that turn!\n", Colors.Cyan, this->name, defMod);
 }
 
 static EntityEvent GetActionEvent(Entity *actioner, int Automated)
@@ -94,11 +94,11 @@ static EntityEvent GetActionEvent(Entity *actioner, int Automated)
     // Display possible actions if the GET is not automated
     if (Automated == 0)
     {
-        printf("Possible Actions : \n");
+        Print("Possible Actions : \n", Colors.Reset);
         for (int i = 0; i < ACTIONCOUNT; i++)
         {
             if (EntityActions.All[i].Action != EntityActions.S.MagicAtk.Action || (actioner->magic > 0))
-                printf("[%i] %s\n", i, EntityActions.All[i].name);
+                Print("[%i] %s\n", Colors.Reset, i, EntityActions.All[i].name);
             else
                 canMagicAttack = 0;
         }
@@ -113,7 +113,7 @@ static EntityEvent GetActionEvent(Entity *actioner, int Automated)
         {
             // Notify if not automated
             if (Automated == 0)
-                printf("You do not have any charges for this. Please choose another.\n");
+                Print("You do not have any charges for this. Please choose another.\n", Colors.Reset);
             return GetActionEvent(actioner, Automated);
         }
         else
@@ -124,7 +124,7 @@ static EntityEvent GetActionEvent(Entity *actioner, int Automated)
     }
     else if (Automated == 0) // This only happens if it is not automated
     {
-        printf("Invalid choice. Please choose another.\n");
+        Print("Invalid choice. Please choose another.\n", Colors.Reset);
         return GetActionEvent(actioner, Automated);
     }
 }
@@ -146,9 +146,9 @@ const union EntityActions EntityActions = {
 
 static void AskAllocPoints(int min, int max, int *remainingPoints, int *stat_field, char stat_label[])
 {
-    printf("Allocate (%i to %i) points to ", min, max);
-    printf(stat_label);
-    printf(" (%i remaining) : ", *remainingPoints);
+    Print("Allocate (%i to %i) points to ", Colors.Reset, min, max);
+    Print(stat_label, Colors.Reset);
+    Print(" (%i remaining) : ", Colors.Reset, *remainingPoints);
     int pointsAlloc = AskInt("");
 
     int thereIsReason = 0;
@@ -175,17 +175,17 @@ static void AskAllocPoints(int min, int max, int *remainingPoints, int *stat_fie
 
     *remainingPoints -= pointsAlloc;
     *stat_field = pointsAlloc;
-    printf("Allocated %i points to ", pointsAlloc);
-    printf(stat_label);
+    Print("Allocated %i points to ", Colors.Reset, pointsAlloc);
+    Print(stat_label, Colors.Reset);
 
     if (thereIsReason)
     {
-        printf(" (");
-        printf(reason);
-        printf(")");
+        Print(" (", Colors.Reset);
+        Print(reason, Colors.Reset);
+        Print(")", Colors.Reset);
     }
 
-    printf("\n");
+    Print("\n", Colors.Reset);
 
     free(reason);
 }

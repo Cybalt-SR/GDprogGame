@@ -14,21 +14,18 @@ static void RemoveElement(EntityListElement element)
 {
     if (element->prev != NULL)
     {
-        if (isDebugging)
-            printDebugText("| stiched %u to %u |", element->next, element->prev);
+        printDebugText("| stiched %u to %u |", element->next, element->prev);
 
         element->prev->next = element->next;
     }
     if (element->next != NULL)
     {
-        if (isDebugging)
-            printDebugText("| stiched %u to %u |", element->prev, element->next);
+        printDebugText("| stiched %u to %u |", element->prev, element->next);
 
         element->next->prev = element->prev;
     }
 
-    if (isDebugging)
-        printDebugText("\n");
+    printDebugText("\n");
 
     free(element);
 }
@@ -44,8 +41,7 @@ static void Add(EntityListElement list, int modValue, int duration)
     temp->prev = NULL;
     temp->next = NULL;
 
-    if (isDebugging)
-        printDebugText("| Attaching %u to %u |\n", temp, list);
+    printDebugText("| Attaching %u to %u |\n", temp, list);
 
     EntityListElement end = list;
 
@@ -62,24 +58,21 @@ static void GetTotal(EntityListElement list, int *total)
 {
     if (list != NULL)
     {
-        if (isDebugging)
-            printDebugText("| Tried to add to %i from %u |\n", *total, list);
+        printDebugText("| Tried to add to %i from %u |\n", *total, list);
 
         GetTotal(list->next, total);
         *total += list->value->modifier;
     }
     else
     {
-        if (isDebugging)
-            printDebugText("| Tried to add to %i from NULL |\n", *total);
+        printDebugText("| Tried to add to %i from NULL |\n", *total);
     }
 }
 static void UpdateTick(EntityListElement list)
 {
     if (list != NULL)
     {
-        if (isDebugging)
-            printDebugText("| Updating %u |", list);
+        printDebugText("| Updating %u |", list);
 
         UpdateTick(list->next);
 
@@ -89,16 +82,14 @@ static void UpdateTick(EntityListElement list)
 
             if (list->value->turns_left == 0)
             {
-                if (isDebugging)
-                    printDebugText("| Deleting %u |", list);
+                printDebugText("| Deleting %u |", list);
 
                 RemoveElement(list);
             }
         }
     }
 
-    if (isDebugging)
-        printDebugText("\n");
+    printDebugText("\n");
 }
 static EntityListElement CreateList()
 {

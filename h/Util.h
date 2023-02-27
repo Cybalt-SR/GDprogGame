@@ -4,18 +4,41 @@
 #include <stdarg.h>
 #include <time.h>
 
-#define ANSI_COLOR_RED     "\033[31m"
-#define ANSI_COLOR_GREEN   "\033[32m"
-#define ANSI_COLOR_YELLOW  "\033[33m"
-#define ANSI_COLOR_BLUE    "\033[34m"
-#define ANSI_COLOR_MAGENTA "\033[35m"
-#define ANSI_COLOR_CYAN    "\033[36m"
-#define ANSI_COLOR_RESET   "\033[0m"
+// This variable is strictly used for enabling debug printf's
+#define USE_DEBUGPRINTS 1
+#define USE_COLOREDTEXT 1
 
-//This variable is strictly used for enabling debug printf's
-static int isDebugging = 1;
+typedef char *Color;
+static const struct Colors
+{
+    const Color Red;
+    const Color Green;
+    const Color Yellow;
+    const Color Blue;
+    const Color Magenta;
+    const Color Cyan;
+    const Color Reset;
+} Colors = {
+    .Red = "\033[31m",
+    .Green = "\033[32m",
+    .Yellow = "\033[33m",
+    .Blue = "\033[34m",
+    .Magenta = "\033[35m",
+    .Cyan = "\033[36m",
+    .Reset = "\033[0m"};
 
-// Numerical
+//==============================
+// Prints
+//==============================
+
+static char *GetLetterStr(char letter, int length)
+{
+    char *str = malloc(length + 1);
+    memset(str, letter, length);
+    str[length] = '\0';
+    return str;
+}
+
 static int GetDigits(int num)
 {
     if (num != 0)
@@ -33,62 +56,74 @@ static int GetDigits(int num)
         return 1;
     }
 }
-
-// Text Output Related
-static void printDebugText(char text[], ...){
-    va_list(args);
-    
-    char color[] = ANSI_COLOR_YELLOW;
-    char colorTerminator[] = ANSI_COLOR_RESET;
-    char *newStr = (char*)malloc(100 * sizeof(char));
+static void vPrint(char text[], Color color, va_list args)
+{
+    char *newStr = (char *)malloc(100 * sizeof(char));
     strcpy(newStr, "");
-    strcat(newStr, color);
+    if (USE_COLOREDTEXT)
+        strcat(newStr, color);
     strcat(newStr, text);
-    strcat(newStr, colorTerminator);
+    if (USE_COLOREDTEXT)
+        strcat(newStr, Colors.Reset);
 
-    va_start(args, text);
     vprintf(newStr, args);
-    va_end(args);
 
     free(newStr);
 }
+static void Print(char text[], Color color, ...)
+{
+    va_list(args);
+
+    va_start(args, color);
+    vPrint(text, color, args);
+    va_end(args);
+}
+// ##############
+//  ^^^ Dependencies
+// ##############
+static void printDebugText(char text[], ...)
+{
+    if (USE_DEBUGPRINTS)
+    {
+        va_list(args);
+
+        va_start(args, text);
+        vPrint(text, Colors.Yellow, args);
+        va_end(args);
+    }
+}
 static void PrintDivider()
 {
-    printf("================\n");
-}
-static char *GetLetterStr(char letter, int length)
-{
-    char *str = malloc(length + 1);
-    memset(str, letter, length);
-    str[length] = '\0';
-    return str;
+    Print("================\n", Colors.Red);
 }
 static void Display2ColValues(char label[], int left, int right)
 {
     char *labelgap = GetLetterStr(' ', 6 - strlen(label));
     char *leftgap = GetLetterStr(' ', 6 - GetDigits(left));
     char *rightgap = GetLetterStr(' ', 6 - GetDigits(right));
-    printf("%s%s : %i%s.%s%i\n", label, labelgap, left, leftgap, rightgap, right);
+    Print("%s%s : %i%s.%s%i\n", Colors.Reset, label, labelgap, left, leftgap, rightgap, right);
 }
 static void Display2ColTitle(char label[], char left[], char right[])
 {
     char *labelgap = GetLetterStr(' ', 6 - strlen(label));
     char *leftgap = GetLetterStr(' ', 6 - strlen(left));
     char *rightgap = GetLetterStr(' ', 6 - strlen(right));
-    printf("%s%s : %s%s.%s%s\n", label, labelgap, left, leftgap, rightgap, right);
+    Print("%s%s : %s%s.%s%s\n", Colors.Green, label, labelgap, left, leftgap, rightgap, right);
 }
 
-// Input Related
+//==============================
+// Input
+//==============================
 static float AskFloat(char question[])
 {
     float toReturn;
-    printf(question);
+    Print(question, Colors.Reset);
     scanf("%f", &toReturn);
     return toReturn;
 }
 static int AskInt(char question[])
 {
-    printf(question);
+    Print(question, Colors.Reset);
 
     int input, temp, status;
 
@@ -97,14 +132,16 @@ static int AskInt(char question[])
     {
         while ((temp = getchar()) != EOF && temp != '\n')
             ;
-        printf("[INVALID] Enter a number: ");
+        Print("[INVALID] Enter a number: ", Colors.Red);
         status = scanf("%d", &input);
     }
 
     return input;
 }
 
+//==============================
 // Randomizers
+//==============================
 static void SetSeed()
 {
     static time_t t;
@@ -116,6 +153,9 @@ static void SetSeed()
         srand((unsigned)time(&t));
     }
 }
+// ##############
+//  ^^^ Dependencies
+// ##############
 static int RandomRange(int min, int max)
 {
     SetSeed();
