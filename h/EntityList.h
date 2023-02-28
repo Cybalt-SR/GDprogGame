@@ -6,15 +6,15 @@ typedef struct ListElement
     struct ListElement *next;
 } *ListElement;
 
-extern const struct EntityList
+extern const struct List
 {
     ListElement (*CreateList)(void);
     void (*DisposeList)(ListElement value);
     void (*RemoveElement)(ListElement value);
-    void (*Add)(ListElement list, int modValue, int duration);
+    void (*Add)(ListElement list, void * elementValue);
     void (*GetTotal)(ListElement list, int *total);
     void (*UpdateTick)(ListElement list);
-} EntityList;
+} List;
 
 //Element Types
 
@@ -23,7 +23,6 @@ typedef struct ModifierElementValue
     int modifier, turns_left;
 } *ModifierElementValue;
 
-typedef struct AllocatedMemElementValue
-{
-    void *memAddress;
-} *AllocatedMemElementValue;
+extern const struct Element{
+    ModifierElementValue (*GetModifier)(int mod, int dur);
+}Element;

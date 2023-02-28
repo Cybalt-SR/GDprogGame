@@ -9,6 +9,7 @@
         "entitylist.h": "c",
         "stdio.h": "c",
         "stdarg.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "cstdlib": "c"
     }
 }

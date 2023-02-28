@@ -1,5 +1,4 @@
 #include "h/u_stdio.h"
-#include "h/EntityList.h"
 
 static void DisposeList(ListElement value)
 {
@@ -29,14 +28,11 @@ static void RemoveElement(ListElement element)
 
     free(element);
 }
-static void Add(ListElement list, int modValue, int duration)
+static void Add(ListElement list, void *elementValue)
 {
-    ListElement temp = (ListElement)malloc(sizeof(struct ListElement));
-    ModifierElementValue value = (ModifierElementValue)malloc(sizeof(struct ModifierElementValue));
-    value->modifier = modValue;
-    value->turns_left = duration;
+    ListElement temp = (ListElement)uMemAlloc(sizeof(struct ListElement));
 
-    temp->value = value;
+    temp->value = elementValue;
     temp->isListHead = 0;
     temp->prev = NULL;
     temp->next = NULL;
@@ -61,7 +57,9 @@ static void GetTotal(ListElement list, int *total)
         printDebugText("| Tried to add to %i from %u |\n", *total, list);
 
         GetTotal(list->next, total);
-        *total += ((ModifierElementValue)list->value)->modifier;
+
+        if ((ModifierElementValue)list->value != NULL)
+            *total += ((ModifierElementValue)list->value)->modifier;
     }
     else
     {
@@ -93,23 +91,32 @@ static void UpdateTick(ListElement list)
 }
 static ListElement CreateList()
 {
-    ListElement temp = (ListElement)malloc(sizeof(struct ListElement));
-    ModifierElementValue value = (ModifierElementValue)malloc(sizeof(struct ModifierElementValue));
-    value->modifier = 0;
-    value->turns_left = 0;
+    ListElement temp = (ListElement)uMemAlloc(sizeof(struct ListElement));
 
     temp->isListHead = 1;
-    temp->value = value;
+    temp->value = NULL;
     temp->next = NULL;
     temp->prev = NULL;
 
     return temp;
 }
 
-const struct EntityList EntityList = {
+const struct List List = {
     .CreateList = &CreateList,
     .DisposeList = &DisposeList,
     .RemoveElement = &RemoveElement,
     .Add = &Add,
     .GetTotal = &GetTotal,
     .UpdateTick = &UpdateTick};
+
+// Element Value Constructors
+
+static ModifierElementValue GetModifierValue(int modValue, int duration)
+{
+    ModifierElementValue value = (ModifierElementValue)uMemAlloc(sizeof(struct ModifierElementValue));
+    value->modifier = modValue;
+    value->turns_left = duration;
+}
+
+const struct Element Element = {
+    .GetModifier = &GetModifierValue};

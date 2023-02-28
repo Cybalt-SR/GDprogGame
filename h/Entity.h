@@ -37,5 +37,6 @@ extern const union EntityActions
 
 extern const struct EntityConstructor
 {
-    Entity *(*Create)(char name[], char pronoun[], int byPlayer);
+    Entity *(*CreatePlayer)(char name[], char pronoun[]);
+    Entity *(*CreateBot)(char name[], char pronoun[], int level);
 } EntityConstructor;

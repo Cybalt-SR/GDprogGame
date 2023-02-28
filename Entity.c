@@ -1,89 +1,89 @@
 #include "h/u_stdio.h"
-#include "h/EntityList.h"
-#include "h/Entity.h"
 
 //==============================
 // Entity Actions
 //==============================
 
+static int RollAgainst(int min, int max, int mult, Entity *target)
+{
+    int roll = RandomRange(min, max) * mult;
+    int targetDef = target->def;
+    List.GetTotal(target->DefModifiers, &targetDef);
+
+    int result = roll > targetDef;
+    if (result)
+    {
+        Print("It hit (%i vs %i) ", Colors.Cyan, roll, targetDef);
+    }
+    else
+    {
+        Print("It missed (%i vs %i)... \n", Colors.Cyan, roll, targetDef);
+    }
+
+    return result;
+}
+
 static void Punch(Entity *this, Entity *target)
 {
     Print("%s Punched! ", Colors.Cyan, this->name);
 
-    if (RandomRange(1, 10) > target->def)
+    if (RollAgainst(1, 10, 1, target))
     {
         int damage = RandomRange(1, 10);
         target->hp -= damage;
 
-        Print("It hit %s for %i damage! \n", Colors.Cyan, target->name, damage);
-    }
-    else
-    {
-        Print("It missed... \n", Colors.Cyan);
+        Print("%s for %i damage! \n", Colors.Cyan, target->name, damage);
     }
 }
 static void Kick(Entity *this, Entity *target)
 {
     Print("%s Kicked! ", Colors.Cyan, this->name);
 
-    if (RandomRange(2, 9) > target->def)
+    if (RollAgainst(2, 9, 1, target))
     {
         int damage = RandomRange(1, 10) * 2;
         target->hp -= damage;
 
         int defMod = RandomRange(-5, 0);
-        EntityList.Add(target->DefModifiers, defMod, 2);
+        List.Add(target->DefModifiers, Element.GetModifier(defMod, 2));
 
-        Print("It hit %s for %i damage, decreasing %s def by %i until next turn! \n", Colors.Cyan, target->name, damage, target->pronoun, defMod);
-    }
-    else
-    {
-        Print("It missed... \n", Colors.Cyan);
+        Print("%s for %i damage, decreasing %s def by %i until next turn! \n", Colors.Cyan, target->name, damage, target->pronoun, defMod);
     }
 }
 static void Throw(Entity *this, Entity *target)
 {
     Print("%s Throwed! ", Colors.Cyan, this->name);
-    int actualDef = target->def;
-    EntityList.GetTotal(target->DefModifiers, &actualDef);
 
-    if (RandomRange(2, 9) > actualDef)
+    if (RollAgainst(2, 9, 1, target))
     {
         int damage = RandomRange(1, 5);
         target->hp -= damage;
 
         int targetDefMod = RandomRange(-10, -1);
         int thisDefMod = RandomRange(-3, -1);
-        EntityList.Add(target->DefModifiers, targetDefMod, 2);
-        EntityList.Add(this->DefModifiers, thisDefMod, 2);
+        List.Add(target->DefModifiers, Element.GetModifier(targetDefMod, 2));
+        List.Add(this->DefModifiers, Element.GetModifier(thisDefMod, 2));
 
-        Print("It hit %s for %i damage, decreasing %s def by %i and %s def by %i until next turn! \n", Colors.Cyan, target->name, damage, target->pronoun, targetDefMod, this->pronoun, thisDefMod);
-    }
-    else
-    {
-        Print("It missed... \n", Colors.Cyan);
+        Print("%s for %i damage, decreasing %s def by %i and %s def by %i until next turn! \n", Colors.Cyan, target->name, damage, target->pronoun, targetDefMod, this->pronoun, thisDefMod);
     }
 }
 static void MagicAtk(Entity *this, Entity *target)
 {
     Print("%s Magic Attacked! ", Colors.Cyan, this->name);
 
-    if (RandomRange(1, 10) > target->def)
+    if (RollAgainst(1, 5, 3, target))
     {
-        int damage = RandomRange(1, 10);
+        int damage = RandomRange(1, 10) * 5;
         target->hp -= damage;
+        this->magic -= 1;
 
-        Print("It hit %s for %i damage! \n", Colors.Cyan, target->name, damage);
-    }
-    else
-    {
-        Print("It missed... \n", Colors.Cyan);
+        Print("%s for %i damage! \n", Colors.Cyan, target->name, damage);
     }
 }
 static void Block(Entity *this, Entity *target)
 {
     int defMod = RandomRange(1, 10);
-    EntityList.Add(this->DefModifiers, defMod, 1);
+    List.Add(this->DefModifiers, Element.GetModifier(defMod, 1));
     Print("%s Blocked! Increasing DEF by %i that turn!\n", Colors.Cyan, this->name, defMod);
 }
 
@@ -182,35 +182,42 @@ static void AskAllocPoints(int min, int max, int *remainingPoints, int *stat_fie
 
     Print("\n", Colors.Reset);
 }
-static Entity *Create(char name[], char pronoun[], int byPlayer)
+static Entity *CreateEntityShell(char name[], char pronoun[])
 {
-    Entity *entity = (Entity *)malloc(sizeof(Entity));
+    Entity *entity = (Entity *)uMemAlloc(sizeof(Entity));
     entity->name = name;
     entity->pronoun = pronoun;
     entity->hp = 0;
     entity->def = 0;
     entity->magic = 0;
-    entity->DefModifiers = EntityList.CreateList();
+    entity->DefModifiers = List.CreateList();
 
-    if (byPlayer)
-    {
-        int remainingPoints = 10;
-        AskAllocPoints(1, 10, &remainingPoints, &entity->hp, "Health (1 point = 10 hp)");
-        entity->hp *= 10;
-        AskAllocPoints(0, 10, &remainingPoints, &entity->def, "Defense");
-        AskAllocPoints(0, 10, &remainingPoints, &entity->magic, "Magic");
+    return entity;
+}
+static Entity *CreatePlayer(char name[], char pronoun[])
+{
+    Entity *entity = CreateEntityShell(name, pronoun);
 
-        entity->GetActionEvent = &AskPlayerAction;
-    }
-    else
-    {
-        entity->hp = RandomRange(10, 50);
-        entity->def = RandomRange(1, 5);
-        entity->magic = RandomRange(0, 3);
-        entity->GetActionEvent = &GetRandomAction;
-    }
+    int remainingPoints = 10;
+    AskAllocPoints(1, 10, &remainingPoints, &entity->hp, "Health (1 point = 10 hp)");
+    entity->hp *= 10;
+    AskAllocPoints(0, 10, &remainingPoints, &entity->def, "Defense");
+    AskAllocPoints(0, 10, &remainingPoints, &entity->magic, "Magic");
+
+    entity->GetActionEvent = &AskPlayerAction;
+
+    return entity;
+}
+static Entity *CreateBot(char name[], char pronoun[], int level)
+{
+    Entity *entity = CreateEntityShell(name, pronoun);
+
+    entity->hp = RandomRange(10 + (10 * level), 50 + (10 * level));
+    entity->def = RandomRange(Min(1 + level, 8), Min(5 + level, 9));
+    entity->magic = RandomRange(0, 3 + level);
+    entity->GetActionEvent = &GetRandomAction;
 
     return entity;
 }
 
-const struct EntityConstructor EntityConstructor = {.Create = &Create};
+const struct EntityConstructor EntityConstructor = {.CreateBot = &CreateBot, .CreatePlayer = &CreatePlayer};

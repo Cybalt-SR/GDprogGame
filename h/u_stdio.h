@@ -3,9 +3,12 @@
 #include <string.h>
 #include <stdarg.h>
 #include <time.h>
+#include "EntityList.h"
+#include "u_mem.h"
+#include "Entity.h"
 
 // This variable is strictly used for enabling debug printf's
-#define USE_DEBUGPRINTS 1
+#define USE_DEBUGPRINTS 0
 #define USE_COLOREDTEXT 1
 
 typedef char *Color;
@@ -33,7 +36,7 @@ static const struct Colors
 
 static char *GetLetterStr(char letter, int length)
 {
-    char *str = malloc(length + 1);
+    char *str = uMemAlloc(length + 1);
     memset(str, letter, length);
     str[length] = '\0';
     return str;
@@ -58,7 +61,7 @@ static int GetDigits(int num)
 }
 static void vPrint(char text[], Color color, va_list args)
 {
-    char *newStr = (char *)malloc(100 * sizeof(char));
+    char *newStr = (char *)uMemAlloc(100 * sizeof(char));
     strcpy(newStr, "");
     if (USE_COLOREDTEXT)
         strcat(newStr, color);
@@ -168,4 +171,16 @@ static int CoinToss()
     SetSeed();
     float normalizedRand = (float)rand() / (float)RAND_MAX;
     return normalizedRand > 0.5f ? 1 : 0;
+}
+
+//==============================
+// Math
+//==============================
+
+static int Max(int val1, int val2){
+    return val1 < val2 ? val2 : val1;
+}
+
+static int Min(int val1, int val2){
+    return val1 > val2 ? val2 : val1;
 }
