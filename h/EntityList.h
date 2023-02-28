@@ -22,3 +22,8 @@ typedef struct ModifierElementValue
 {
     int modifier, turns_left;
 } *ModifierElementValue;
+
+typedef struct AllocatedMemElementValue
+{
+    void *memAddress;
+} *AllocatedMemElementValue;
