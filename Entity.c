@@ -189,7 +189,7 @@ static EntityEvent GetActionEvent(Entity *actioner, int Automated)
             return entityEvent;
         }
     }
-    else if (Automated == 0) // Recursive input validation. This only happens if it is not automated
+    else // Recursive input validation. This only happens if it is not automated
     {
         Print("Invalid choice. Please choose another.\n", Colors.Reset);
         return GetActionEvent(actioner, Automated);
