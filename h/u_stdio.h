@@ -12,6 +12,7 @@
 #define USE_COLOREDTEXT 1
 
 typedef char *Color;
+//Used for more readable displays and lessens the need for dividers and headers.
 static const struct Colors
 {
     const Color Red;
@@ -34,6 +35,7 @@ static const struct Colors
 // Print Related
 //==============================
 
+//Returns a line of string, which is made up of a specific letter and of specified length.
 static char *GetLetterStr(char letter, int length)
 {
     char *str = uMemAlloc(length + 1);
@@ -42,6 +44,7 @@ static char *GetLetterStr(char letter, int length)
     return str;
 }
 
+//Gets the digits of an int using iterative integer division by ten.
 static int GetDigits(int num)
 {
     if (num != 0)
@@ -59,6 +62,12 @@ static int GetDigits(int num)
         return 1;
     }
 }
+
+/*
+A user defined wrapper for the vprintf function.
+This function is also meant to be wrapped and abstracted by other custom print functions.
+This is meant to give an extra Color functionality to the printf function which suits the program's needs.
+*/
 static void vPrint(char text[], Color color, va_list args)
 {
     char *newStr = (char *)uMemAlloc(100 * sizeof(char));
@@ -73,6 +82,8 @@ static void vPrint(char text[], Color color, va_list args)
 
     free(newStr);
 }
+
+//A wrapper for the vPrint function which abstracts the va_list parameter to the standard multiple arg passing.
 static void Print(char text[], Color color, ...)
 {
     va_list(args);
@@ -84,6 +95,8 @@ static void Print(char text[], Color color, ...)
 // ##############
 //  ^^^ Dependencies
 // ##############
+
+//A wrapper for the vPrint function which only runs if the USE_DEBUGPRINTS macro is true/1.
 static void printDebugText(char text[], ...)
 {
     if (USE_DEBUGPRINTS)
@@ -95,16 +108,23 @@ static void printDebugText(char text[], ...)
         va_end(args);
     }
 }
+
+//A wrapper for a print function which prints a red divider. Made for consistency.
 static void PrintDivider()
 {
     Print("================\n", Colors.Red);
 }
+
 static void Display2ColValues(char label[], int left, int right)
 {
     char *labelgap = GetLetterStr(' ', 6 - strlen(label));
     char *leftgap = GetLetterStr(' ', 6 - GetDigits(left));
     char *rightgap = GetLetterStr(' ', 6 - GetDigits(right));
     Print("%s%s : %i%s.%s%i\n", Colors.Reset, label, labelgap, left, leftgap, rightgap, right);
+    //Freeing allocated memory on use.
+    free(labelgap);
+    free(leftgap);
+    free(rightgap);
 }
 static void Display2ColTitle(char label[], char left[], char right[])
 {
@@ -112,6 +132,10 @@ static void Display2ColTitle(char label[], char left[], char right[])
     char *leftgap = GetLetterStr(' ', 6 - strlen(left));
     char *rightgap = GetLetterStr(' ', 6 - strlen(right));
     Print("%s%s : %s%s.%s%s\n", Colors.Green, label, labelgap, left, leftgap, rightgap, right);
+    //Freeing allocated memory on use.
+    free(labelgap);
+    free(leftgap);
+    free(rightgap);
 }
 
 //==============================
@@ -159,6 +183,7 @@ static void SetSeed()
 // ##############
 //  ^^^ Dependencies
 // ##############
+
 static int RandomRange(int min, int max)
 {
     SetSeed();

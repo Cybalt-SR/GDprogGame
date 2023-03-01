@@ -1,5 +1,19 @@
+/*
+NOTE: When compiling, make sure to include ALL THREE *.c files in the compilation inputs.
+    This is so that the linker will be able to link prototypes from the *.h files to their respective definitions in the *.c files.
+
+FILES NEEDED TO INCLUDE:
+    Main.c
+    Entity.c
+    u_list.c
+*/
+
 #include "h/u_stdio.h"
 
+/*
+Scope: Runtime Function
+Use: Combines the functionality of Entity.h and u_stdio.h when it comes to displaying two-column values.
+*/
 void Display2ColEntityInfo(Entity *left, Entity *right)
 {
     int leftActualDef = left->def;
@@ -12,6 +26,11 @@ void Display2ColEntityInfo(Entity *left, Entity *right)
     Display2ColValues("def   ", leftActualDef, rightActualDef);
     Display2ColValues("magic ", left->magic, right->magic);
 }
+
+/*
+Scope: Runtime Function
+Use: Event ordering. Which mostly uses a cointoss to determine order, alongside specific conditions.
+*/
 void Combat(EntityEvent PlayerEvent, EntityEvent EnemyEvent)
 {
     // Setting default execution order
@@ -39,8 +58,21 @@ void Combat(EntityEvent PlayerEvent, EntityEvent EnemyEvent)
     secondEvent->action->Action(secondEvent->doer, firstEvent->doer);
 }
 
+/*
+Scope: Runtime Function
+Use: Initializes or Reinitializes the game to its default values.
+*/
 static void Init(Entity **Player, Entity **Enemy, int *EnemiesDefeated)
 {
+    if (*Player != NULL) //To prevent memory leaks
+    {
+        free(*Player);
+    }
+    if (*Enemy != NULL) //To prevent memory leaks
+    {
+        free(*Enemy);
+    }
+
     *EnemiesDefeated = 0;
     // Phase 1
     *Player = EntityConstructor.CreatePlayer("You", "Your");
@@ -53,8 +85,8 @@ int main()
     int userQuitted = 0;
 
     int EnemiesDefeated = 0;
-    Entity *Player;
-    Entity *Enemy;
+    Entity *Player = NULL;
+    Entity *Enemy = NULL;
 
     Init(&Player, &Enemy, &EnemiesDefeated);
 
@@ -71,7 +103,7 @@ int main()
             List.UpdateTick(Player->DefModifiers);
             List.UpdateTick(Enemy->DefModifiers);
         }
-        else
+        else //Someone has died
         {
             if (Player->hp > 0) // Win
             {
@@ -102,7 +134,7 @@ int main()
                         Print("Player magic regained by %i.\n", Colors.Green, magIncrease);
                 }
             }
-            else
+            else //Lose
             {
                 Print("You are dead.\n", Colors.Red);
 
