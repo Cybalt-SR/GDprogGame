@@ -8,13 +8,14 @@
                 "-fdiagnostics-color=always",
                 "-g",
                 "${workspaceFolder}/Entity.c",
-                "${workspaceFolder}/EntityList.c",
+                "${workspaceFolder}/u_list.c",
                 "${workspaceFolder}/Main.c",
                 "-o",
                 "${fileDirname}\\Game.exe"
             ],
             "options": {
                 "cwd": "E:\\MinGW\\bin"
+                "cwd": "C:\\MinGW\\bin"
             },
             "problemMatcher": [
                 "$gcc"
