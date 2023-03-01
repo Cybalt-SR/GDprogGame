@@ -7,10 +7,12 @@
 #include "u_mem.h"
 #include "Entity.h"
 
-// This variable is strictly used for enabling debug printf's
+//For enabling debug prints (mostly memory address allocations)
 #define USE_DEBUGPRINTS 0
+//For enabling color escape characters (in case not compatible)
 #define USE_COLOREDTEXT 1
 
+//Color is simply an escape character, however, for less confusion, a custon type is defined for it.
 typedef char *Color;
 //Used for more readable displays and lessens the need for dividers and headers.
 static const struct Colors
@@ -38,7 +40,7 @@ static const struct Colors
 //Returns a line of string, which is made up of a specific letter and of specified length.
 static char *GetLetterStr(char letter, int length)
 {
-    char *str = uMemAlloc(length + 1);
+    char *str = (char*)uMemAlloc(length + 1);
     memset(str, letter, length);
     str[length] = '\0';
     return str;

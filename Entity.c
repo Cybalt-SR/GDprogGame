@@ -241,7 +241,11 @@ static void AskAllocPoints(int min, int max, int *remainingPoints, int *stat_fie
         pointsAlloc = *remainingPoints;
         reason = "not enough points";
     }
-
+    /*
+    NOTE:
+    It is not needed to use free(reason) here since the pointers it is being assigned to are const pointers with a const value.
+    No additional memory is being allocated.
+    */
     *remainingPoints -= pointsAlloc;
     *stat_field = pointsAlloc;
     Print("Allocated %i points to ", Colors.Reset, pointsAlloc);
