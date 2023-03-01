@@ -73,30 +73,34 @@ int main()
         }
         else
         {
-            if (Player->hp > 0 && AskInt("Do you wish to continue? [1/0] : ") == 1) // Win
+            if (Player->hp > 0) // Win
             {
-                // Enemy reinit
-                EnemiesDefeated++;
-                free(Enemy);
-                Enemy = EntityConstructor.CreateBot("Enemy", "Their", EnemiesDefeated);
-
-                // Player reinit
-                int hpRegen = RandomRange(1, 30);
-                int defIncrease = Player->def < 9 ? RandomRange(0, 1) : 0;
-                int magIncrease = RandomRange(0, 3);
-
-                Player->hp += hpRegen;
-                Player->def += defIncrease;
-                Player->magic += magIncrease;
-
-                // Display
-                PrintDivider();
                 Print("You killed an Enemy! \n", Colors.Green);
-                Print("Player health regained by %i.\n", Colors.Green, hpRegen);
-                if (defIncrease > 0)
-                    Print("Player def increased by %i.\n", Colors.Green, defIncrease);
-                if (magIncrease > 0)
-                    Print("Player magic regained by %i.\n", Colors.Green, magIncrease);
+
+                if (AskInt("Do you wish to continue? [1/0] : ") == 1)
+                {
+                    // Enemy reinit
+                    EnemiesDefeated++;
+                    free(Enemy);
+                    Enemy = EntityConstructor.CreateBot("Enemy", "Their", EnemiesDefeated);
+
+                    // Player reinit
+                    int hpRegen = RandomRange(1, 30);
+                    int defIncrease = Player->def < 9 ? RandomRange(0, 1) : 0;
+                    int magIncrease = RandomRange(0, 3);
+
+                    Player->hp += hpRegen;
+                    Player->def += defIncrease;
+                    Player->magic += magIncrease;
+
+                    // Display
+                    PrintDivider();
+                    Print("Player health regained by %i.\n", Colors.Green, hpRegen);
+                    if (defIncrease > 0)
+                        Print("Player def increased by %i.\n", Colors.Green, defIncrease);
+                    if (magIncrease > 0)
+                        Print("Player magic regained by %i.\n", Colors.Green, magIncrease);
+                }
             }
             else
             {

@@ -4,7 +4,7 @@
 // Entity Actions
 //==============================
 
-static int RollAgainst(int min, int max, int mult, Entity *target)
+static int RollAgainst(int min, int max, int mult, Entity *target, int customElse)
 {
     int roll = RandomRange(min, max) * mult;
     int targetDef = target->def;
@@ -17,7 +17,12 @@ static int RollAgainst(int min, int max, int mult, Entity *target)
     }
     else
     {
-        Print("It missed (%i vs %i)... \n", Colors.Cyan, roll, targetDef);
+        Print("It missed (%i vs %i)... ", Colors.Cyan, roll, targetDef);
+
+        if (customElse != 1)
+        {
+            Print("\n", Colors.Reset);
+        }
     }
 
     return result;
@@ -27,7 +32,7 @@ static void Punch(Entity *this, Entity *target)
 {
     Print("%s Punched! ", Colors.Cyan, this->name);
 
-    if (RollAgainst(1, 10, 1, target))
+    if (RollAgainst(1, 10, 1, target, 0))
     {
         int damage = RandomRange(1, 10);
         target->hp -= damage;
@@ -39,22 +44,29 @@ static void Kick(Entity *this, Entity *target)
 {
     Print("%s Kicked! ", Colors.Cyan, this->name);
 
-    if (RollAgainst(2, 9, 1, target))
+    int defMod = RandomRange(-5, 0);
+
+    if (RollAgainst(2, 9, 1, target, 1))
     {
         int damage = RandomRange(1, 10) * 2;
         target->hp -= damage;
 
-        int defMod = RandomRange(-5, 0);
-        List.Add(target->DefModifiers, Element.GetModifier(defMod, 2));
+        List.Add(this->DefModifiers, Element.GetModifier(defMod, 1));
 
-        Print("%s for %i damage, decreasing %s def by %i until next turn! \n", Colors.Cyan, target->name, damage, target->pronoun, defMod);
+        Print("%s for %i damage, decreasing %s def by %i for that turn! \n", Colors.Cyan, target->name, damage, this->pronoun, defMod);
+    }
+    else
+    {
+
+        List.Add(this->DefModifiers, Element.GetModifier(defMod, 2));
+        Print("decreasing %s def by %i until next turn! \n", Colors.Cyan, this->pronoun, defMod);
     }
 }
 static void Throw(Entity *this, Entity *target)
 {
     Print("%s Throwed! ", Colors.Cyan, this->name);
 
-    if (RollAgainst(2, 9, 1, target))
+    if (RollAgainst(0, 10, 1, target, 1))
     {
         int damage = RandomRange(1, 5);
         target->hp -= damage;
@@ -62,16 +74,20 @@ static void Throw(Entity *this, Entity *target)
         int targetDefMod = RandomRange(-10, -1);
         int thisDefMod = RandomRange(-3, -1);
         List.Add(target->DefModifiers, Element.GetModifier(targetDefMod, 2));
-        List.Add(this->DefModifiers, Element.GetModifier(thisDefMod, 2));
+        List.Add(this->DefModifiers, Element.GetModifier(thisDefMod, 1));
 
         Print("%s for %i damage, decreasing %s def by %i and %s def by %i until next turn! \n", Colors.Cyan, target->name, damage, target->pronoun, targetDefMod, this->pronoun, thisDefMod);
+    }else{
+        int thisDefMod = RandomRange(-10, -1);
+        List.Add(this->DefModifiers, Element.GetModifier(thisDefMod, 1));
+        Print("decreasing %s def by %i until next turn! \n", Colors.Cyan, this->pronoun, thisDefMod);
     }
 }
 static void MagicAtk(Entity *this, Entity *target)
 {
     Print("%s Magic Attacked! ", Colors.Cyan, this->name);
 
-    if (RollAgainst(1, 5, 3, target))
+    if (RollAgainst(1, 5, 3, target, 0))
     {
         int damage = RandomRange(1, 10) * 5;
         target->hp -= damage;
@@ -198,7 +214,7 @@ static Entity *CreatePlayer(char name[], char pronoun[])
 {
     Entity *entity = CreateEntityShell(name, pronoun);
 
-    int remainingPoints = 10;
+    int remainingPoints = 30;
     AskAllocPoints(1, 10, &remainingPoints, &entity->hp, "Health (1 point = 10 hp)");
     entity->hp *= 10;
     AskAllocPoints(0, 10, &remainingPoints, &entity->def, "Defense");
