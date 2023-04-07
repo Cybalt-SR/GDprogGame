@@ -88,6 +88,7 @@ int main()
     Entity *Player = NULL;
     Entity *Enemy = NULL;
 
+    //Phase 1 and 2
     Init(&Player, &Enemy, &EnemiesDefeated);
 
     // Phase 3

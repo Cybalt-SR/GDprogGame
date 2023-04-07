@@ -1,5 +1,8 @@
 #include "h/u_stdio.h"
 
+/*
+Use: To completely dispose a list which uses the list head of a linked list.
+*/
 static void DisposeList(ListElement value)
 {
     if (value->next != NULL)
@@ -9,6 +12,9 @@ static void DisposeList(ListElement value)
 
     free(value);
 }
+/*
+Use: Removes an element and stiches the previous and next element.
+*/
 static void RemoveElement(ListElement element)
 {
     if (element->prev != NULL)
