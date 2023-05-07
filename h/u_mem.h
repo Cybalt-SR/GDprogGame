@@ -17,5 +17,3 @@ static void *uMemAlloc(size_t size)
 */
     return allocation;
 }
-
-static void uFree();

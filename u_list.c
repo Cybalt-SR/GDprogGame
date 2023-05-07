@@ -55,46 +55,6 @@ static void Add(ListElement list, void *elementValue)
     end->next = temp;
     temp->prev = end;
 }
-
-static void GetTotal(ListElement list, int *total)
-{
-    if (list != NULL)
-    {
-        printDebugText("| Tried to add to %i from %u |\n", *total, list);
-
-        GetTotal(list->next, total);
-
-        if ((ModifierElementValue)list->value != NULL)
-            *total += ((ModifierElementValue)list->value)->modifier;
-    }
-    else
-    {
-        printDebugText("| Tried to add to %i from NULL |\n", *total);
-    }
-}
-static void UpdateTick(ListElement list)
-{
-    if (list != NULL)
-    {
-        printDebugText("| Updating %u |", list);
-
-        UpdateTick(list->next);
-
-        if (list->isListHead != 1)
-        {
-            ((ModifierElementValue)list->value)->turns_left -= 1;
-
-            if (((ModifierElementValue)list->value)->turns_left == 0)
-            {
-                printDebugText("| Deleting %u |", list);
-
-                RemoveElement(list);
-            }
-        }
-    }
-
-    printDebugText("\n");
-}
 static ListElement CreateList()
 {
     ListElement temp = (ListElement)uMemAlloc(sizeof(struct ListElement));
@@ -111,18 +71,4 @@ const struct List List = {
     .CreateList = &CreateList,
     .DisposeList = &DisposeList,
     .RemoveElement = &RemoveElement,
-    .Add = &Add,
-    .GetTotal = &GetTotal,
-    .UpdateTick = &UpdateTick};
-
-// Element Value Constructors
-
-static ModifierElementValue GetModifierValue(int modValue, int duration)
-{
-    ModifierElementValue value = (ModifierElementValue)uMemAlloc(sizeof(struct ModifierElementValue));
-    value->modifier = modValue;
-    value->turns_left = duration;
-}
-
-const struct Element Element = {
-    .GetModifier = &GetModifierValue};
+    .Add = &Add};

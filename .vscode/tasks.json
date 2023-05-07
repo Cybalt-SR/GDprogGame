@@ -7,11 +7,11 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${workspaceFolder}/Entity.c",
+                "${workspaceFolder}/u_CinemaHall.c",
                 "${workspaceFolder}/u_list.c",
                 "${workspaceFolder}/Main.c",
                 "-o",
-                "${fileDirname}\\Game.exe",
+                "${workspaceFolder}\\Game.exe",
                 "-Wall"
             ],
             "options": {

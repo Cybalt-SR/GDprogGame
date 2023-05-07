@@ -5,7 +5,7 @@
 #include <time.h>
 #include "u_list.h"
 #include "u_mem.h"
-#include "Entity.h"
+#include "u_CinemaHall.h"
 
 //For enabling debug prints (mostly memory address allocations)
 #define USE_DEBUGPRINTS 0
@@ -70,7 +70,7 @@ A user defined wrapper for the vprintf function.
 This function is also meant to be wrapped and abstracted by other custom print functions.
 This is meant to give an extra Color functionality to the printf function which suits the program's needs.
 */
-static void vPrint(char text[], Color color, va_list args)
+static void vPrint(char *text, Color color, va_list args)
 {
     char *newStr = (char *)uMemAlloc(100 * sizeof(char));
     strcpy(newStr, "");
@@ -86,7 +86,7 @@ static void vPrint(char text[], Color color, va_list args)
 }
 
 //A wrapper for the vPrint function which abstracts the va_list parameter to the standard multiple arg passing.
-static void Print(char text[], Color color, ...)
+static void Print(char *text, Color color, ...)
 {
     va_list(args);
 
@@ -115,29 +115,6 @@ static void printDebugText(char text[], ...)
 static void PrintDivider()
 {
     Print("================\n", Colors.Red);
-}
-
-static void Display2ColValues(char label[], int left, int right)
-{
-    char *labelgap = GetLetterStr(' ', 6 - strlen(label));
-    char *leftgap = GetLetterStr(' ', 6 - GetDigits(left));
-    char *rightgap = GetLetterStr(' ', 6 - GetDigits(right));
-    Print("%s%s : %i%s.%s%i\n", Colors.Reset, label, labelgap, left, leftgap, rightgap, right);
-    //Freeing allocated memory on use.
-    free(labelgap);
-    free(leftgap);
-    free(rightgap);
-}
-static void Display2ColTitle(char label[], char left[], char right[])
-{
-    char *labelgap = GetLetterStr(' ', 6 - strlen(label));
-    char *leftgap = GetLetterStr(' ', 6 - strlen(left));
-    char *rightgap = GetLetterStr(' ', 6 - strlen(right));
-    Print("%s%s : %s%s.%s%s\n", Colors.Green, label, labelgap, left, leftgap, rightgap, right);
-    //Freeing allocated memory on use.
-    free(labelgap);
-    free(leftgap);
-    free(rightgap);
 }
 
 //==============================
@@ -192,12 +169,6 @@ static int RandomRange(int min, int max)
     float normalizedRand = (float)rand() / (float)RAND_MAX;
     int range = max - min;
     return (int)((normalizedRand * (float)range) + (float)min);
-}
-static int CoinToss()
-{
-    SetSeed();
-    float normalizedRand = (float)rand() / (float)RAND_MAX;
-    return normalizedRand > 0.5f ? 1 : 0;
 }
 
 //==============================
