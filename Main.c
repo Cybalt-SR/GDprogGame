@@ -12,10 +12,24 @@ FILES NEEDED TO INCLUDE:
 
 int main()
 {
-    CinemaHall hall = Cinema.Create();
+    CinemaHallData hall = Cinema.Create();
+    MovieDatabase movieData = Movie.Create();
 
     while (1)
     {
-        Cinema.DisplaySchedule(hall);
+        Print("Main Menu : \n", Colors.Cyan);
+        Print("[1] edit hall\n", Colors.Cyan);
+        Print("[2] edit movie database\n", Colors.Cyan);
+        int action = AskInt("Enter action : ");
+
+        switch (action)
+        {
+        case 1:
+            Cinema.DisplayMovieHallSchedule(hall, movieData);
+            break;
+        case 2:
+            Movie.EditDatabase(movieData);
+            break;
+        }
     }
 }

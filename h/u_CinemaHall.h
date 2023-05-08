@@ -3,15 +3,32 @@ typedef struct MovieData
     char *title;
     int rating;
     char *summary;
-    char **actors;
+    char *actors;
 } *MovieData;
+
+typedef struct MovieDatabase
+{
+    MovieData *Movies;
+    int length;
+} *MovieDatabase;
+
+extern const struct Movie{
+    void (*EditDatabase)(MovieDatabase database);
+    MovieDatabase (*Create)();
+} Movie;
+
+typedef struct SeatData{
+    char *buyer;
+    int price;
+} *SeatData;
 
 typedef struct MovieSlotData
 {
+    char seatingArr;
     int onhold;
     int reserved;
-    char *LowerBox;
-    char *UpperBox;
+    SeatData *LowerBox;
+    SeatData *UpperBox;
     MovieData movie;
 } *MovieSlotData;
 
@@ -27,14 +44,13 @@ typedef union CinemaScheduleData
     MovieSlotData slots[3];
 } *CinemaScheduleData;
 
-typedef struct CinemaHall
+typedef struct CinemaHallData
 {
-    char seatingArr;
     CinemaScheduleData *schedule;
-} *CinemaHall;
+} *CinemaHallData;
 
 extern const struct Cinema
 {
-    void (*DisplaySchedule)(CinemaHall hall);
-    CinemaHall (*Create)();
+    void (*DisplayMovieHallSchedule)(CinemaHallData hall, MovieDatabase database);
+    CinemaHallData (*Create)();
 } Cinema;

@@ -10,7 +10,7 @@
 //For enabling debug prints (mostly memory address allocations)
 #define USE_DEBUGPRINTS 0
 //For enabling color escape characters (in case not compatible)
-#define USE_COLOREDTEXT 1
+#define USE_COLOREDTEXT 0
 
 //Color is simply an escape character, however, for less confusion, a custon type is defined for it.
 typedef char *Color;
@@ -94,10 +94,6 @@ static void Print(char *text, Color color, ...)
     vPrint(text, color, args);
     va_end(args);
 }
-
-static void PrintFixed(char *text, Color color, int length, ...){
-
-}
 // ##############
 //  ^^^ Dependencies
 // ##############
@@ -124,6 +120,13 @@ static void PrintDivider()
 //==============================
 // Input
 //==============================
+static char *AskString(char question[])
+{
+    char *toReturn = (char*)uMemAlloc(sizeof(char *) * 100);
+    Print(question, Colors.Reset);
+    scanf("%s", toReturn);
+    return toReturn;
+}
 static float AskFloat(char question[])
 {
     float toReturn;
