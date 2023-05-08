@@ -31,5 +31,7 @@ int main()
             Movie.EditDatabase(movieData);
             break;
         }
+
+        Cinema.Serialize(".hall1Save.txt", hall);
     }
 }

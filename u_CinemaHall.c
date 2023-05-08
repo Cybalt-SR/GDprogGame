@@ -20,7 +20,7 @@ static MovieData AskMovie(MovieDatabase database, char *question)
     return database->Movies[movieIndex];
 }
 
-static MovieDatabase CreateMovieData()
+static MovieDatabase CreateMovieDatabase()
 {
     MovieDatabase database = (MovieDatabase)uMemAlloc(sizeof(struct MovieDatabase));
 
@@ -111,6 +111,19 @@ static void PrintSeatingLabel(SeatData seatdata)
     else
     {
         Print(" O ", Colors.Green);
+    }
+}
+
+static void ResetSeating(MovieSlotData slotdata)
+{
+    for (size_t i = 0; i < 30; i++)
+    {
+        slotdata->LowerBox[i]->buyer = NULL;
+    }
+
+    for (size_t i = 0; i < 20; i++)
+    {
+        slotdata->UpperBox[i]->buyer = NULL;
     }
 }
 
@@ -224,6 +237,7 @@ static void DisplayMovieHallSchedule(CinemaHallData hall, MovieDatabase moviedat
 
         for (size_t slot = 0; slot < 3; slot++)
         {
+            ResetSeating(schedEditing->slots[slot]);
             schedEditing->slots[slot]->onhold = 0;
             schedEditing->slots[slot]->reserved = 1;
             schedEditing->slots[slot]->movie = movie;
@@ -233,6 +247,7 @@ static void DisplayMovieHallSchedule(CinemaHallData hall, MovieDatabase moviedat
     {
         for (size_t slot = 0; slot < 3; slot++)
         {
+            ResetSeating(schedEditing->slots[slot]);
             schedEditing->slots[slot]->onhold = !schedEditing->slots[slot]->onhold;
         }
 
@@ -247,39 +262,64 @@ static void DisplayMovieHallSchedule(CinemaHallData hall, MovieDatabase moviedat
     }
     else if (dayAction == 3)
     {
-        int slotIndex = AskInt("Input slot index : ");
-        MovieData movie = AskMovie(moviedatabase, "Input movie ID to slot : ");
-
-        schedEditing->slots[slotIndex]->movie = movie;
-    }
-    else if (dayAction == 4)
-    {
-        int slotIndex = AskInt("Input slot index : ");
-        MovieSlotData slotToBuy = schedEditing->slots[slotIndex];
-
-        ShowMovieSlotSeating(slotToBuy);
-
-        int row = AskInt("Input seat row # : ");
-        int col = AskInt("Input seat col # : ");
-        int isUpperBox = row >= 3;
-        int seatId = ((row % 3) * 10) + col;
-
-        SeatData seatToBuy = isUpperBox ? slotToBuy->UpperBox[seatId] : slotToBuy->LowerBox[seatId];
-
-        if (seatToBuy->buyer != NULL)
+        if (schedEditing->slots[0]->onhold == 1)
         {
-            Print("This seat is already occupied by %s.", Colors.Red, seatToBuy->buyer);
+            Print("You cannot schedule a movie in a day scheduled for maintenance.\n", Colors.Red);
+        }
+        else if (schedEditing->slots[0]->reserved == 1)
+        {
+            Print("You cannot schedule a movie in a day reserved for a premiere.\n", Colors.Red);
         }
         else
         {
-            Print("Buy R%iC%i for %i", Colors.Cyan, row, col);
-            char *confirmation = AskString("? : ");
-            if (confirmation == "Y" || confirmation == "y")
+            int slotIndex = AskInt("Input slot index : ");
+            MovieData movie = AskMovie(moviedatabase, "Input movie ID to slot : ");
+
+            schedEditing->slots[slotIndex]->movie = movie;
+        }
+    }
+    else if (dayAction == 4)
+    {
+        if (schedEditing->slots[0]->onhold == 1)
+        {
+            Print("You cannot buy tickets for a day scheduled for maintenance.\n", Colors.Red);
+        }
+        else
+        {
+            int slotIndex = AskInt("Input slot index : ");
+            MovieSlotData slotToBuy = schedEditing->slots[slotIndex];
+
+            if (slotToBuy->movie == NULL)
             {
-                char *buyerName = AskString("Please enter your name for the receipt : ");
-                free(seatToBuy->buyer);
-                seatToBuy->buyer = (char *)uMemAlloc(sizeof(char *) * 100);
-                strcpy(seatToBuy->buyer, buyerName);
+                Print("You cannot buy tickets for a time slot with no movie scheduled.\n", Colors.Red);
+            }
+            else
+            {
+                ShowMovieSlotSeating(slotToBuy);
+
+                int row = AskInt("Input seat row # : ");
+                int col = AskInt("Input seat col # : ");
+                int isUpperBox = row >= 3;
+                int seatId = ((row % 3) * 10) + col;
+
+                SeatData seatToBuy = isUpperBox ? slotToBuy->UpperBox[seatId] : slotToBuy->LowerBox[seatId];
+
+                if (seatToBuy->buyer != NULL)
+                {
+                    Print("This seat is already occupied by %s.", Colors.Red, seatToBuy->buyer);
+                }
+                else
+                {
+                    Print("Buy R%iC%i for %i", Colors.Cyan, row, col);
+                    char *confirmation = AskString("? : ");
+                    if (confirmation == "Y" || confirmation == "y")
+                    {
+                        char *buyerName = AskString("Please enter your name for the receipt : ");
+                        free(seatToBuy->buyer);
+                        seatToBuy->buyer = (char *)uMemAlloc(sizeof(char *) * 100);
+                        strcpy(seatToBuy->buyer, buyerName);
+                    }
+                }
             }
         }
     }
@@ -289,7 +329,7 @@ static CinemaHallData CreateCinemaHallData()
 {
     CinemaHallData hall = (CinemaHallData)uMemAlloc(sizeof(struct CinemaHallData));
 
-    hall->schedule = (CinemaScheduleData *)uMemAlloc(sizeof(struct dataSlots*) * 5);
+    hall->schedule = (CinemaScheduleData *)uMemAlloc(sizeof(struct dataSlots *) * 5);
     for (int day = 0; day < 5; day++)
     {
         hall->schedule[day] = (CinemaScheduleData)uMemAlloc(sizeof(struct dataSlots));
@@ -302,7 +342,7 @@ static CinemaHallData CreateCinemaHallData()
             hall->schedule[day]->slots[slot]->reserved = 0;
             hall->schedule[day]->slots[slot]->movie = NULL;
 
-            hall->schedule[day]->slots[slot]->LowerBox = (SeatData *)uMemAlloc(sizeof(struct SeatData*) * 30);
+            hall->schedule[day]->slots[slot]->LowerBox = (SeatData *)uMemAlloc(sizeof(struct SeatData *) * 30);
             for (int seat = 0; seat < 30; seat++)
             {
                 hall->schedule[day]->slots[slot]->LowerBox[seat] = (SeatData)uMemAlloc(sizeof(struct SeatData));
@@ -310,7 +350,74 @@ static CinemaHallData CreateCinemaHallData()
                 hall->schedule[day]->slots[slot]->LowerBox[seat]->price = 100;
             }
 
-            hall->schedule[day]->slots[slot]->UpperBox = (SeatData *)uMemAlloc(sizeof(struct SeatData*) * 20);
+            hall->schedule[day]->slots[slot]->UpperBox = (SeatData *)uMemAlloc(sizeof(struct SeatData *) * 20);
+            for (int seat = 0; seat < 20; seat++)
+            {
+                hall->schedule[day]->slots[slot]->UpperBox[seat] = (SeatData)uMemAlloc(sizeof(struct SeatData));
+                hall->schedule[day]->slots[slot]->UpperBox[seat]->buyer = NULL;
+                hall->schedule[day]->slots[slot]->UpperBox[seat]->price = 200;
+            }
+        }
+    }
+
+    return hall;
+}
+
+static void Serialize(char *path, CinemaHallData halldata){
+    FILE *fptr = fopen(path,"w");
+
+    for (size_t day = 0; day < 5; day++)
+    {
+        CinemaScheduleData daydata = halldata->schedule[day];
+
+        for (size_t slot = 0; slot < 3; slot++)
+        {
+            MovieSlotData slotdata = daydata->slots[slot];
+
+            fprintf(fptr, "d%is%imovie: %i\n", day, slot, slotdata->movie);
+            fprintf(fptr, "d%is%ionhold: %i\n", day, slot, slotdata->onhold);
+            fprintf(fptr, "d%is%ireserved: %i\n", day, slot, slotdata->reserved);
+            fprintf(fptr, "d%is%iseatingArr: %c\n", day, slot, slotdata->seatingArr);
+
+            for (size_t i = 0; i < 30; i++)
+            {
+                fprintf(fptr, "d%is%is%ibuyer: %s\n", day, slot, i, slotdata->LowerBox[i]->buyer);
+            }
+            for (size_t i = 0; i < 20; i++)
+            {
+                fprintf(fptr, "d%is%is%ibuyer: %s\n", day, slot, i, slotdata->UpperBox[i]->buyer);
+            }
+        }
+    }
+    fclose(fptr);
+}
+
+static CinemaHallData LoadHallData(char *path)
+{
+    CinemaHallData hall = (CinemaHallData)uMemAlloc(sizeof(struct CinemaHallData));
+
+    hall->schedule = (CinemaScheduleData *)uMemAlloc(sizeof(struct dataSlots *) * 5);
+    for (int day = 0; day < 5; day++)
+    {
+        hall->schedule[day] = (CinemaScheduleData)uMemAlloc(sizeof(struct dataSlots));
+
+        for (int slot = 0; slot < 3; slot++)
+        {
+            hall->schedule[day]->slots[slot] = (MovieSlotData)uMemAlloc(sizeof(struct MovieSlotData));
+            hall->schedule[day]->slots[slot]->seatingArr = 'R';
+            hall->schedule[day]->slots[slot]->onhold = 0;
+            hall->schedule[day]->slots[slot]->reserved = 0;
+            hall->schedule[day]->slots[slot]->movie = NULL;
+
+            hall->schedule[day]->slots[slot]->LowerBox = (SeatData *)uMemAlloc(sizeof(struct SeatData *) * 30);
+            for (int seat = 0; seat < 30; seat++)
+            {
+                hall->schedule[day]->slots[slot]->LowerBox[seat] = (SeatData)uMemAlloc(sizeof(struct SeatData));
+                hall->schedule[day]->slots[slot]->LowerBox[seat]->buyer = NULL;
+                hall->schedule[day]->slots[slot]->LowerBox[seat]->price = 100;
+            }
+
+            hall->schedule[day]->slots[slot]->UpperBox = (SeatData *)uMemAlloc(sizeof(struct SeatData *) * 20);
             for (int seat = 0; seat < 20; seat++)
             {
                 hall->schedule[day]->slots[slot]->UpperBox[seat] = (SeatData)uMemAlloc(sizeof(struct SeatData));
@@ -325,8 +432,9 @@ static CinemaHallData CreateCinemaHallData()
 
 const struct Movie Movie = {
     .EditDatabase = &EditMovieDatabase,
-    .Create = &CreateMovieData};
+    .Create = &CreateMovieDatabase};
 
 const struct Cinema Cinema = {
     .DisplayMovieHallSchedule = &DisplayMovieHallSchedule,
-    .Create = &CreateCinemaHallData};
+    .Create = &CreateCinemaHallData,
+    .Serialize = &Serialize};

@@ -53,4 +53,6 @@ extern const struct Cinema
 {
     void (*DisplayMovieHallSchedule)(CinemaHallData hall, MovieDatabase database);
     CinemaHallData (*Create)();
+    CinemaHallData (*Load)(char *path);
+    void (*Serialize)(char *path, CinemaHallData halldata);
 } Cinema;
