@@ -35,8 +35,6 @@ typedef struct CinemaHall
 
 extern const struct Cinema
 {
-    char *(*GetState)(MovieSlotData slot);
     void (*DisplaySchedule)(CinemaHall hall);
-    void (*Modify)(CinemaHall hall);
     CinemaHall (*Create)();
 } Cinema;

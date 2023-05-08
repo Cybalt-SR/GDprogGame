@@ -16,25 +16,6 @@ int main()
 
     while (1)
     {
-        Print("1: GetState\n", Colors.Cyan);
-        Print("2: DisplaySeats\n", Colors.Cyan);
-        Print("3: DisplaySchedule\n", Colors.Cyan);
-        Print("4: Modify\n", Colors.Cyan);
-        int choice = AskInt("Enter Command : ");
-
-        switch (choice)
-        {
-        case 1:
-            Cinema.GetState(hall);
-            break;
-        case 3:
-            Cinema.DisplaySchedule(hall);
-            break;
-        case 4:
-            Cinema.Modify(hall);
-            break;
-        default:
-            break;
-        }
+        Cinema.DisplaySchedule(hall);
     }
 }

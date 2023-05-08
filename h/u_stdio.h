@@ -94,6 +94,10 @@ static void Print(char *text, Color color, ...)
     vPrint(text, color, args);
     va_end(args);
 }
+
+static void PrintFixed(char *text, Color color, int length, ...){
+
+}
 // ##############
 //  ^^^ Dependencies
 // ##############
