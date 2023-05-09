@@ -7,14 +7,14 @@
 #include "u_mem.h"
 #include "u_CinemaHall.h"
 
-//For enabling debug prints (mostly memory address allocations)
+// For enabling debug prints (mostly memory address allocations)
 #define USE_DEBUGPRINTS 0
-//For enabling color escape characters (in case not compatible)
-#define USE_COLOREDTEXT 0
+// For enabling color escape characters (in case not compatible)
+#define USE_COLOREDTEXT 1
 
-//Color is simply an escape character, however, for less confusion, a custon type is defined for it.
+// Color is simply an escape character, however, for less confusion, a custon type is defined for it.
 typedef char *Color;
-//Used for more readable displays and lessens the need for dividers and headers.
+// Used for more readable displays and lessens the need for dividers and headers.
 static const struct Colors
 {
     const Color Red;
@@ -37,16 +37,16 @@ static const struct Colors
 // Print Related
 //==============================
 
-//Returns a line of string, which is made up of a specific letter and of specified length.
+// Returns a line of string, which is made up of a specific letter and of specified length.
 static char *GetLetterStr(char letter, int length)
 {
-    char *str = (char*)uMemAlloc(length + 1);
+    char *str = (char *)uMemAlloc(length + 1);
     memset(str, letter, length);
     str[length] = '\0';
     return str;
 }
 
-//Gets the digits of an int using iterative integer division by ten.
+// Gets the digits of an int using iterative integer division by ten.
 static int GetDigits(int num)
 {
     if (num != 0)
@@ -85,7 +85,7 @@ static void vPrint(char *text, Color color, va_list args)
     free(newStr);
 }
 
-//A wrapper for the vPrint function which abstracts the va_list parameter to the standard multiple arg passing.
+// A wrapper for the vPrint function which abstracts the va_list parameter to the standard multiple arg passing.
 static void Print(char *text, Color color, ...)
 {
     va_list(args);
@@ -98,7 +98,7 @@ static void Print(char *text, Color color, ...)
 //  ^^^ Dependencies
 // ##############
 
-//A wrapper for the vPrint function which only runs if the USE_DEBUGPRINTS macro is true/1.
+// A wrapper for the vPrint function which only runs if the USE_DEBUGPRINTS macro is true/1.
 static void printDebugText(char text[], ...)
 {
     if (USE_DEBUGPRINTS)
@@ -111,7 +111,7 @@ static void printDebugText(char text[], ...)
     }
 }
 
-//A wrapper for a print function which prints a red divider. Made for consistency.
+// A wrapper for a print function which prints a red divider. Made for consistency.
 static void PrintDivider()
 {
     Print("================\n", Colors.Red);
@@ -122,7 +122,7 @@ static void PrintDivider()
 //==============================
 static char *AskString(char question[])
 {
-    char *toReturn = (char*)uMemAlloc(sizeof(char *) * 100);
+    char *toReturn = (char *)uMemAlloc(sizeof(char *) * 100);
     Print(question, Colors.Reset);
     scanf("%s", toReturn);
     return toReturn;
@@ -150,6 +150,22 @@ static int AskInt(char question[])
     }
 
     return input;
+}
+static int AskMenu(char *title, char *question, int length, Color mainColor, Color numColor, ...)
+{
+    Print("%s\n", mainColor, title);
+
+    va_list(args);
+    va_start(args, numColor);
+
+    for (size_t i = 1; i < length + 1; i++)
+    {
+        Print("[%s%i%s] %s\n", mainColor, numColor, i, mainColor, va_arg(args, char *));
+    }
+
+    va_end(args);
+
+    return AskInt(question);
 }
 
 //==============================
@@ -182,10 +198,12 @@ static int RandomRange(int min, int max)
 // Math
 //==============================
 
-static int Max(int val1, int val2){
+static int Max(int val1, int val2)
+{
     return val1 < val2 ? val2 : val1;
 }
 
-static int Min(int val1, int val2){
+static int Min(int val1, int val2)
+{
     return val1 > val2 ? val2 : val1;
 }

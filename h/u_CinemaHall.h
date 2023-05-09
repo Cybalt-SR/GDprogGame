@@ -15,6 +15,8 @@ typedef struct MovieDatabase
 extern const struct Movie{
     void (*EditDatabase)(MovieDatabase database);
     MovieDatabase (*Create)();
+    MovieDatabase (*Load)(char *path);
+    void (*SerializeMovieDatabase)(char *path, MovieDatabase halldata);
 } Movie;
 
 typedef struct SeatData{
@@ -29,7 +31,7 @@ typedef struct MovieSlotData
     int reserved;
     SeatData *LowerBox;
     SeatData *UpperBox;
-    MovieData movie;
+    int movieID;
 } *MovieSlotData;
 
 typedef union CinemaScheduleData
@@ -54,5 +56,5 @@ extern const struct Cinema
     void (*DisplayMovieHallSchedule)(CinemaHallData hall, MovieDatabase database);
     CinemaHallData (*Create)();
     CinemaHallData (*Load)(char *path);
-    void (*Serialize)(char *path, CinemaHallData halldata);
+    void (*SerializeHallData)(char *path, CinemaHallData halldata);
 } Cinema;

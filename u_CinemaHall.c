@@ -13,11 +13,13 @@ static void DisplayMovieDatabase(MovieDatabase database)
     }
 }
 
-static MovieData AskMovie(MovieDatabase database, char *question)
+static int AskMovie(MovieDatabase database, char *question)
 {
     DisplayMovieDatabase(database);
-    int movieIndex = AskInt(question);
-    return database->Movies[movieIndex];
+    int id = AskInt(question);
+    id = Max(id, 0);
+    id = Min(id, database->length - 1);
+    return id;
 }
 
 static MovieDatabase CreateMovieDatabase()
@@ -34,11 +36,11 @@ static void EditMovieDatabase(MovieDatabase database)
 {
     DisplayMovieDatabase(database);
     Print("\n", Colors.Reset);
-    Print("Actions : \n", Colors.Cyan);
-    Print("[1] Edit existing movie\n", Colors.Cyan);
-    Print("[2] Add movie\n", Colors.Cyan);
-    Print("[3] Remove movie\n", Colors.Cyan);
-    int actionInt = AskInt("Action to do : ");
+    int actionInt = AskMenu(
+        "Actions : ", "Action to do : ", 3, Colors.Cyan, Colors.Yellow,
+        "Edit existing movie",
+        "Add movie",
+        "Remove movie");
 
     if (actionInt == 1)
     {
@@ -76,7 +78,7 @@ static void EditMovieDatabase(MovieDatabase database)
     }
 }
 
-static char *GetState(MovieSlotData slot)
+static char *GetState(MovieSlotData slot, MovieDatabase database)
 {
     if (slot->onhold)
     {
@@ -86,14 +88,14 @@ static char *GetState(MovieSlotData slot)
     {
         char *state = (char *)uMemAlloc(sizeof(char *) * 100);
         strcpy(state, "Reserved for ");
-        strcat(state, slot->movie->title);
+        strcat(state, database->Movies[slot->movieID]->title);
         return state;
     }
-    else if (slot->movie != NULL)
+    else if (slot->movieID > -1)
     {
         char *state = (char *)uMemAlloc(sizeof(char *) * 100);
         strcpy(state, "Used for ");
-        strcat(state, slot->movie->title);
+        strcat(state, database->Movies[slot->movieID]->title);
         return state;
     }
     else
@@ -124,6 +126,35 @@ static void ResetSeating(MovieSlotData slotdata)
     for (size_t i = 0; i < 20; i++)
     {
         slotdata->UpperBox[i]->buyer = NULL;
+    }
+}
+
+static int ValidateTicketBuy(MovieSlotData slotdata, char *name)
+{
+    int ticketsBought = 0;
+
+    for (size_t i = 0; i < 30; i++)
+    {
+        if (strcmp(slotdata->LowerBox[i]->buyer, name) == 0)
+        {
+            ticketsBought++;
+        }
+    }
+    for (size_t i = 0; i < 20; i++)
+    {
+        if (strcmp(slotdata->UpperBox[i]->buyer, name) == 0)
+        {
+            ticketsBought++;
+        }
+    }
+
+    if (ticketsBought >= 5)
+    {
+        return 0;
+    }
+    else
+    {
+        return 1;
     }
 }
 
@@ -189,7 +220,7 @@ static void DisplayMovieHallSchedule(CinemaHallData hall, MovieDatabase moviedat
 
         for (size_t day = 0; day < 5; day++)
         {
-            char *state = GetState(hall->schedule[day]->slots[slot]);
+            char *state = GetState(hall->schedule[day]->slots[slot], moviedatabase);
             Print("%-6.6s", Colors.Reset, state);
             Print("|", Colors.Cyan);
             free(state);
@@ -217,30 +248,48 @@ static void DisplayMovieHallSchedule(CinemaHallData hall, MovieDatabase moviedat
             break;
         }
 
-        char *state = GetState(schedEditing->slots[slot]);
+        char *state = GetState(schedEditing->slots[slot], moviedatabase);
         Print(state, Colors.Reset);
         Print("\n", Colors.Cyan);
         free(state);
     }
 
     Print("[Warning: Changing any info regarding a slot will cancel all ticket sales on that slot]\n", Colors.Red);
-    Print("Actions: \n", Colors.Cyan);
-    Print("[1] Reserve for Premiere\n", Colors.Cyan);
-    Print("[2] Schedule Maintenance\n", Colors.Cyan);
-    Print("[3] Slot a Movie\n", Colors.Cyan);
-    Print("[4] Buy tickets for a slot\n", Colors.Cyan);
-    int dayAction = AskInt("Which action : ");
+    int dayAction = AskMenu(
+        "Actions:", "Action to do : ", 4, Colors.Cyan, Colors.Yellow,
+        "Reserve for Premiere",
+        "Schedule Maintenance",
+        "Slot a Movie",
+        "Buy tickets for a slot");
 
     if (dayAction == 1)
     {
-        MovieData movie = AskMovie(moviedatabase, "Input movie ID to premiere : ");
-
-        for (size_t slot = 0; slot < 3; slot++)
+        if (schedEditing->slots[0]->reserved == 1)
         {
-            ResetSeating(schedEditing->slots[slot]);
-            schedEditing->slots[slot]->onhold = 0;
-            schedEditing->slots[slot]->reserved = 1;
-            schedEditing->slots[slot]->movie = movie;
+            Print("Premiere already scheduled, successfully unscheduled.\n", Colors.Green);
+
+            for (size_t slot = 0; slot < 3; slot++)
+            {
+                ResetSeating(schedEditing->slots[slot]);
+                schedEditing->slots[slot]->onhold = 0;
+                schedEditing->slots[slot]->reserved = 0;
+                schedEditing->slots[slot]->movieID = -1;
+            }
+        }
+        else
+        {
+            int movie = AskMovie(moviedatabase, "Input movie ID to premiere : ");
+
+            if (movie >= 0)
+            {
+                for (size_t slot = 0; slot < 3; slot++)
+                {
+                    ResetSeating(schedEditing->slots[slot]);
+                    schedEditing->slots[slot]->onhold = 0;
+                    schedEditing->slots[slot]->reserved = 1;
+                    schedEditing->slots[slot]->movieID = movie;
+                }
+            }
         }
     }
     else if (dayAction == 2)
@@ -273,9 +322,10 @@ static void DisplayMovieHallSchedule(CinemaHallData hall, MovieDatabase moviedat
         else
         {
             int slotIndex = AskInt("Input slot index : ");
-            MovieData movie = AskMovie(moviedatabase, "Input movie ID to slot : ");
+            int movie = AskMovie(moviedatabase, "Input movie ID to slot : ");
 
-            schedEditing->slots[slotIndex]->movie = movie;
+            if (movie >= 0)
+                schedEditing->slots[slotIndex]->movieID = movie;
         }
     }
     else if (dayAction == 4)
@@ -289,7 +339,7 @@ static void DisplayMovieHallSchedule(CinemaHallData hall, MovieDatabase moviedat
             int slotIndex = AskInt("Input slot index : ");
             MovieSlotData slotToBuy = schedEditing->slots[slotIndex];
 
-            if (slotToBuy->movie == NULL)
+            if (slotToBuy->movieID == -1)
             {
                 Print("You cannot buy tickets for a time slot with no movie scheduled.\n", Colors.Red);
             }
@@ -306,18 +356,26 @@ static void DisplayMovieHallSchedule(CinemaHallData hall, MovieDatabase moviedat
 
                 if (seatToBuy->buyer != NULL)
                 {
-                    Print("This seat is already occupied by %s.", Colors.Red, seatToBuy->buyer);
+                    Print("This seat is already occupied by %s.\n", Colors.Red, seatToBuy->buyer);
                 }
                 else
                 {
-                    Print("Buy R%iC%i for %i", Colors.Cyan, row, col);
+                    Print("Buy R%iC%i in day %i slot %i for %i", Colors.Cyan, row, col, editDay, slotIndex, seatToBuy->price);
                     char *confirmation = AskString("? : ");
-                    if (confirmation == "Y" || confirmation == "y")
+                    if (strcmp(confirmation, "Y") == 0 || strcmp(confirmation, "y") == 0)
                     {
                         char *buyerName = AskString("Please enter your name for the receipt : ");
-                        free(seatToBuy->buyer);
-                        seatToBuy->buyer = (char *)uMemAlloc(sizeof(char *) * 100);
-                        strcpy(seatToBuy->buyer, buyerName);
+
+                        if (ValidateTicketBuy(slotToBuy, buyerName))
+                        {
+                            free(seatToBuy->buyer);
+                            seatToBuy->buyer = (char *)uMemAlloc(sizeof(char *) * 100);
+                            strcpy(seatToBuy->buyer, buyerName);
+                        }
+                        else
+                        {
+                            Print("You cannot buy more than 5 tickets in a slot.\n", Colors.Red, seatToBuy->buyer);
+                        }
                     }
                 }
             }
@@ -340,7 +398,7 @@ static CinemaHallData CreateCinemaHallData()
             hall->schedule[day]->slots[slot]->seatingArr = 'R';
             hall->schedule[day]->slots[slot]->onhold = 0;
             hall->schedule[day]->slots[slot]->reserved = 0;
-            hall->schedule[day]->slots[slot]->movie = NULL;
+            hall->schedule[day]->slots[slot]->movieID = -1;
 
             hall->schedule[day]->slots[slot]->LowerBox = (SeatData *)uMemAlloc(sizeof(struct SeatData *) * 30);
             for (int seat = 0; seat < 30; seat++)
@@ -363,8 +421,9 @@ static CinemaHallData CreateCinemaHallData()
     return hall;
 }
 
-static void Serialize(char *path, CinemaHallData halldata){
-    FILE *fptr = fopen(path,"w");
+static void SerializeHallData(char *path, CinemaHallData halldata)
+{
+    FILE *fptr = fopen(path, "w");
 
     for (size_t day = 0; day < 5; day++)
     {
@@ -374,18 +433,18 @@ static void Serialize(char *path, CinemaHallData halldata){
         {
             MovieSlotData slotdata = daydata->slots[slot];
 
-            fprintf(fptr, "d%is%imovie: %i\n", day, slot, slotdata->movie);
+            fprintf(fptr, "d%is%imovie: %i\n", day, slot, slotdata->movieID);
             fprintf(fptr, "d%is%ionhold: %i\n", day, slot, slotdata->onhold);
             fprintf(fptr, "d%is%ireserved: %i\n", day, slot, slotdata->reserved);
             fprintf(fptr, "d%is%iseatingArr: %c\n", day, slot, slotdata->seatingArr);
 
             for (size_t i = 0; i < 30; i++)
             {
-                fprintf(fptr, "d%is%is%ibuyer: %s\n", day, slot, i, slotdata->LowerBox[i]->buyer);
+                fprintf(fptr, "d%is%il%ibuyer: %s\n", day, slot, i, slotdata->LowerBox[i]->buyer);
             }
             for (size_t i = 0; i < 20; i++)
             {
-                fprintf(fptr, "d%is%is%ibuyer: %s\n", day, slot, i, slotdata->UpperBox[i]->buyer);
+                fprintf(fptr, "d%is%iu%ibuyer: %s\n", day, slot, i, slotdata->UpperBox[i]->buyer);
             }
         }
     }
@@ -394,47 +453,247 @@ static void Serialize(char *path, CinemaHallData halldata){
 
 static CinemaHallData LoadHallData(char *path)
 {
-    CinemaHallData hall = (CinemaHallData)uMemAlloc(sizeof(struct CinemaHallData));
+    CinemaHallData hall = CreateCinemaHallData();
+    FILE *fptr = fopen(path, "r");
 
-    hall->schedule = (CinemaScheduleData *)uMemAlloc(sizeof(struct dataSlots *) * 5);
-    for (int day = 0; day < 5; day++)
+    char curChar = ' ';
+    char curCharStr[2];
+    curCharStr[1] = '\0';
+    char mostRecentIdentifier;
+    char *curWord = (char *)uMemAlloc(sizeof(char) * 100);
+    strcpy(curWord, "");
+
+    CinemaScheduleData day;
+    MovieSlotData slot;
+    SeatData seat;
+
+    int terminate = 0;
+    while (terminate == 0)
     {
-        hall->schedule[day] = (CinemaScheduleData)uMemAlloc(sizeof(struct dataSlots));
+        curChar = fgetc(fptr);
 
-        for (int slot = 0; slot < 3; slot++)
+        if (curChar == EOF)
         {
-            hall->schedule[day]->slots[slot] = (MovieSlotData)uMemAlloc(sizeof(struct MovieSlotData));
-            hall->schedule[day]->slots[slot]->seatingArr = 'R';
-            hall->schedule[day]->slots[slot]->onhold = 0;
-            hall->schedule[day]->slots[slot]->reserved = 0;
-            hall->schedule[day]->slots[slot]->movie = NULL;
+            terminate = 1;
+        }
+        else
+        {
+            curCharStr[0] = curChar;
+            strcat(curWord, curCharStr);
 
-            hall->schedule[day]->slots[slot]->LowerBox = (SeatData *)uMemAlloc(sizeof(struct SeatData *) * 30);
-            for (int seat = 0; seat < 30; seat++)
+            if ((curChar == 'd' || curChar == 's' || curChar == 'l' || curChar == 'u') && strlen(curWord) <= 1)
             {
-                hall->schedule[day]->slots[slot]->LowerBox[seat] = (SeatData)uMemAlloc(sizeof(struct SeatData));
-                hall->schedule[day]->slots[slot]->LowerBox[seat]->buyer = NULL;
-                hall->schedule[day]->slots[slot]->LowerBox[seat]->price = 100;
+                int index;
+                fscanf(fptr, "%i", &index);
+
+                switch (curChar)
+                {
+                case 'd':
+                    day = hall->schedule[index];
+                    break;
+                case 's':
+                    slot = day->slots[index];
+                    break;
+                case 'l':
+                    seat = slot->LowerBox[index];
+                    break;
+                case 'u':
+                    seat = slot->UpperBox[index];
+                    break;
+                }
+                mostRecentIdentifier = curChar;
+
+                strcpy(curWord, "");
             }
 
-            hall->schedule[day]->slots[slot]->UpperBox = (SeatData *)uMemAlloc(sizeof(struct SeatData *) * 20);
-            for (int seat = 0; seat < 20; seat++)
+            if (curChar == '\n')
             {
-                hall->schedule[day]->slots[slot]->UpperBox[seat] = (SeatData)uMemAlloc(sizeof(struct SeatData));
-                hall->schedule[day]->slots[slot]->UpperBox[seat]->buyer = NULL;
-                hall->schedule[day]->slots[slot]->UpperBox[seat]->price = 200;
+                strcpy(curWord, "");
+            }
+            if (mostRecentIdentifier == 's')
+            {
+                if (strcmp(curWord, "movie") == 0)
+                {
+                    int value;
+                    fseek(fptr, 2, SEEK_CUR);
+                    fscanf(fptr, "%i", &value);
+                    slot->movieID = value;
+                    strcpy(curWord, "");
+                }
+                else if (strcmp(curWord, "onhold") == 0)
+                {
+                    int value;
+                    fseek(fptr, 2, SEEK_CUR);
+                    fscanf(fptr, "%i", &value);
+                    slot->onhold = value;
+                    strcpy(curWord, "");
+                }
+                else if (strcmp(curWord, "reserved") == 0)
+                {
+                    int value;
+                    fseek(fptr, 2, SEEK_CUR);
+                    fscanf(fptr, "%i", &value);
+                    slot->reserved = value;
+                    strcpy(curWord, "");
+                }
+                else if (strcmp(curWord, "seatingArr") == 0)
+                {
+                    char value;
+                    fseek(fptr, 2, SEEK_CUR);
+                    fscanf(fptr, "%c", &value);
+                    slot->seatingArr = value;
+                    strcpy(curWord, "");
+                }
+            }
+            else if (mostRecentIdentifier == 'l' || mostRecentIdentifier == 'u')
+            {
+                if (strcmp(curWord, "buyer") == 0)
+                {
+                    char *value = (char *)uMemAlloc(sizeof(char *) * 100);
+                    fseek(fptr, 2, SEEK_CUR);
+                    fscanf(fptr, "%s", value);
+
+                    if (strcmp(value, "(null)") == 0)
+                    {
+                        seat->buyer = NULL;
+                    }
+                    else
+                    {
+                        seat->buyer = value;
+                    }
+                    strcpy(curWord, "");
+                }
             }
         }
     }
 
+    free(curWord);
+    fclose(fptr);
     return hall;
+}
+
+static MovieDatabase LoadMovieDatabase(char *path)
+{
+    MovieDatabase hall = CreateMovieDatabase();
+    FILE *fptr = fopen(path, "r");
+
+    char curChar = ' ';
+    char curCharStr[2];
+    curCharStr[1] = '\0';
+    char mostRecentIdentifier;
+    char *curWord = (char *)uMemAlloc(sizeof(char) * 100);
+    strcpy(curWord, "");
+
+    MovieData data;
+    int terminate = 0;
+    while (terminate == 0)
+    {
+        curChar = fgetc(fptr);
+        if (curChar == EOF)
+        {
+            terminate = 1;
+        }
+        else
+        {
+            curCharStr[0] = curChar;
+            strcat(curWord, curCharStr);
+
+            if (strcmp(curWord, "dlength") == 0)
+            {
+                int value;
+                fseek(fptr, 2, SEEK_CUR);
+                fscanf(fptr, "%i", &value);
+                hall->length = value;
+                strcpy(curWord, "");
+
+                hall->Movies = (MovieData *)uMemAlloc(sizeof(struct MovieData) * hall->length);
+
+                for (size_t i = 0; i < hall->length; i++)
+                {
+                    hall->Movies[i] = (MovieData)uMemAlloc(sizeof(struct MovieData));
+                }
+            }
+
+            if (curChar == 'i' && strlen(curWord) <= 1)
+            {
+                int index;
+                fscanf(fptr, "%i", &index);
+                data = hall->Movies[index];
+                mostRecentIdentifier = curChar;
+
+                strcpy(curWord, "");
+            }
+
+            if (curChar == '\n')
+            {
+                strcpy(curWord, "");
+            }
+            if (mostRecentIdentifier == 'i')
+            {
+                if (strcmp(curWord, "title") == 0)
+                {
+                    data->title = (char *)uMemAlloc(sizeof(char *) * 100);
+                    fseek(fptr, 2, SEEK_CUR);
+                    fscanf(fptr, "%s", data->title);
+                    strcpy(curWord, "");
+                }
+                else if (strcmp(curWord, "rating") == 0)
+                {
+                    int value;
+                    fseek(fptr, 2, SEEK_CUR);
+                    fscanf(fptr, "%i", &value);
+                    data->rating = value;
+                    strcpy(curWord, "");
+                }
+                else if (strcmp(curWord, "summary") == 0)
+                {
+                    data->summary = (char *)uMemAlloc(sizeof(char *) * 100);
+                    fseek(fptr, 2, SEEK_CUR);
+                    fscanf(fptr, "%s", data->summary);
+                    strcpy(curWord, "");
+                }
+                else if (strcmp(curWord, "actors") == 0)
+                {
+                    data->actors = (char *)uMemAlloc(sizeof(char *) * 100);
+                    fseek(fptr, 2, SEEK_CUR);
+                    fscanf(fptr, "%s", data->actors);
+                    strcpy(curWord, "");
+                }
+            }
+        }
+    }
+
+    free(curWord);
+    fclose(fptr);
+    return hall;
+}
+
+static void SerializeMovieDatabase(char *path, MovieDatabase database)
+{
+    FILE *fptr = fopen(path, "w");
+
+    fprintf(fptr, "dlength: %i\n", database->length);
+
+    for (size_t index = 0; index < database->length; index++)
+    {
+        MovieData data = database->Movies[index];
+
+        fprintf(fptr, "i%ititle: %s\n", index, data->title);
+        fprintf(fptr, "i%irating: %i\n", index, data->rating);
+        fprintf(fptr, "i%isummary: %s\n", index, data->summary);
+        fprintf(fptr, "i%iactors: %s\n", index, data->actors);
+    }
+    fclose(fptr);
 }
 
 const struct Movie Movie = {
     .EditDatabase = &EditMovieDatabase,
-    .Create = &CreateMovieDatabase};
+    .Create = &CreateMovieDatabase,
+    .Load = &LoadMovieDatabase,
+    .SerializeMovieDatabase = &SerializeMovieDatabase};
 
 const struct Cinema Cinema = {
     .DisplayMovieHallSchedule = &DisplayMovieHallSchedule,
     .Create = &CreateCinemaHallData,
-    .Serialize = &Serialize};
+    .SerializeHallData = &SerializeHallData,
+    .Load = &LoadHallData};

@@ -3,7 +3,7 @@
         {
             "type": "cppbuild",
             "label": "C Build Main Files",
-            "command": "E:\\MinGW\\bin\\gcc.exe",
+            "command": "C:\\MinGW\\bin\\gcc.exe",
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
@@ -15,7 +15,7 @@
                 "-Wall"
             ],
             "options": {
-                "cwd": "E:\\MinGW\\bin"
+                "cwd": "C:\\MinGW\\bin"
             },
             "problemMatcher": [
                 "$gcc"
