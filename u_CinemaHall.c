@@ -194,8 +194,7 @@ static void ShowMovieSlotSeating(MovieSlotData slotdata)
     Print("\n\n", Colors.Reset);
 }
 
-static void DisplayMovieHallSchedule(CinemaHallData hall, MovieDatabase moviedatabase)
-{
+static void DisplayHallDaysSchedule(CinemaHallData hall, MovieDatabase moviedatabase){
     Print("SLOT  |", Colors.Cyan);
 
     for (size_t day = 0; day < 5; day++)
@@ -230,6 +229,11 @@ static void DisplayMovieHallSchedule(CinemaHallData hall, MovieDatabase moviedat
 
         Print("\n", Colors.Cyan);
     }
+}
+
+static void EditMovieHallSchedule(CinemaHallData hall, MovieDatabase moviedatabase)
+{
+    DisplayHallDaysSchedule(hall, moviedatabase);
 
     int editDay = AskInt("Enter a day you want to edit [0-4] : ");
     Print("You are editing day %i\n", Colors.Yellow, editDay);
@@ -733,7 +737,8 @@ const struct Movie Movie = {
     .SerializeMovieDatabase = &SerializeMovieDatabase};
 
 const struct Cinema Cinema = {
-    .DisplayMovieHallSchedule = &DisplayMovieHallSchedule,
+    .DisplayMovieHallSchedule = &DisplayHallDaysSchedule,
+    .EditMovieHallSchedule = &EditMovieHallSchedule,
     .Create = &CreateCinemaHallData,
     .SerializeHallData = &SerializeHallData,
     .Load = &LoadHallData};

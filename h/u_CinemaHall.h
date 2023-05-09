@@ -54,6 +54,7 @@ typedef struct CinemaHallData
 extern const struct Cinema
 {
     void (*DisplayMovieHallSchedule)(CinemaHallData hall, MovieDatabase database);
+    void (*EditMovieHallSchedule)(CinemaHallData hall, MovieDatabase database);
     CinemaHallData (*Create)();
     CinemaHallData (*Load)(char *path);
     void (*SerializeHallData)(char *path, CinemaHallData halldata);
