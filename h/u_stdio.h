@@ -127,6 +127,18 @@ static char *AskString(char question[])
     scanf("%s", toReturn);
     return toReturn;
 }
+static int AskYN(char question[])
+{
+    char *confirmation = AskString(question);
+    if (strcmp(confirmation, "Y") == 0 || strcmp(confirmation, "y") == 0)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
 static float AskFloat(char question[])
 {
     float toReturn;

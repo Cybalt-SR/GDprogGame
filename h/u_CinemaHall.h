@@ -1,7 +1,7 @@
 typedef struct MovieData
 {
     char *title;
-    int rating;
+    char *rating;
     char *summary;
     char *actors;
 } *MovieData;
