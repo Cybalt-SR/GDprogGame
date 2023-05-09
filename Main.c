@@ -4,7 +4,7 @@ NOTE: When compiling, make sure to include ALL THREE *.c files in the compilatio
 
 FILES NEEDED TO INCLUDE:
     Main.c
-    Entity.c
+    u_CinemaHall.c
     u_list.c
 */
 

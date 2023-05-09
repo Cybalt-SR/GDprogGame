@@ -135,14 +135,16 @@ static int ValidateTicketBuy(MovieSlotData slotdata, char *name)
 
     for (size_t i = 0; i < 30; i++)
     {
-        if (strcmp(slotdata->LowerBox[i]->buyer, name) == 0)
+        char *slotBuyer = slotdata->LowerBox[i]->buyer;
+        if (slotBuyer != NULL && strcmp(slotBuyer, name) == 0)
         {
             ticketsBought++;
         }
     }
     for (size_t i = 0; i < 20; i++)
     {
-        if (strcmp(slotdata->UpperBox[i]->buyer, name) == 0)
+        char *slotBuyer = slotdata->UpperBox[i]->buyer;
+        if (slotBuyer != NULL && strcmp(slotBuyer, name) == 0)
         {
             ticketsBought++;
         }
@@ -356,7 +358,7 @@ static void DisplayMovieHallSchedule(CinemaHallData hall, MovieDatabase moviedat
 
                 if (seatToBuy->buyer != NULL)
                 {
-                    Print("This seat is already occupied by %s.\n", Colors.Red, seatToBuy->buyer);
+                    Print("This seat is already reserved by %s.\n", Colors.Red, seatToBuy->buyer);
                 }
                 else
                 {
@@ -371,6 +373,8 @@ static void DisplayMovieHallSchedule(CinemaHallData hall, MovieDatabase moviedat
                             free(seatToBuy->buyer);
                             seatToBuy->buyer = (char *)uMemAlloc(sizeof(char *) * 100);
                             strcpy(seatToBuy->buyer, buyerName);
+
+                            Print("You have successfully reserved R%iC%i in day %i slot %i for %s.\n", Colors.Green, row, col, editDay, slotIndex, seatToBuy->buyer);
                         }
                         else
                         {
