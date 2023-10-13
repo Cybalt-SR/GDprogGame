@@ -48,3 +48,7 @@ x64/Debug/Player.obj
 x64/Debug/Scene.obj
 x64/Debug/vc143.idb
 x64/Debug/vc143.pdb
+*.recipe
+*.obj
+*.ilk
+*.log
