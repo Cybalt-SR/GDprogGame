@@ -1,0 +1,16 @@
+window_sizes 1800 903 450 1344 747 104
+cleanlooks_style
+diagrams
+  active  classdiagram_ref 128130 // mco1uml
+    1344 747 100 A-Landscape 0 0
+end
+show_stereotypes
+marked
+  classrelation_ref 129026 // <association>
+  classrelation_ref 128898 // <association>
+end
+selected class_ref 135170 // IOinterface
+open
+  class_ref 135170 // IOinterface
+end
+end

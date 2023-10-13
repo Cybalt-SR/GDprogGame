@@ -1,0 +1,986 @@
+format 224
+"GDPROG3MCO1" // GDPROG3MCO1
+  revision 2
+  modified_by 2 "gabri"
+  // class settings
+  
+  classdiagramsettings member_max_width 0 end
+  
+  classcompositediagramsettings end
+  
+  usecasediagramsettings end
+  
+  sequencediagramsettings end
+  
+  collaborationdiagramsettings end
+  
+  objectdiagramsettings end
+  
+  objectcompositediagramsettings end
+  
+  componentdiagramsettings
+   end
+  
+  deploymentdiagramsettings
+   end
+  
+  statediagramsettings
+   end
+  
+  activitydiagramsettings
+   end
+  
+  cpp_h_dir "C:\\Users\\gabri\\OneDrive\\Documents\\UP_docs\\School\\CPP projects school\\GDPROG3MCO1/"
+  cpp_src_dir "C:\\Users\\gabri\\OneDrive\\Documents\\UP_docs\\School\\CPP projects school\\GDPROG3MCO1/"
+  classview 128130 "GDPROG3MCO1"
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    sequencediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    
+    activitydiagramsettings
+     end
+    class 128130 "Human"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 128130 // <generalisation>
+	relation 128130 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 128130 // <generalisation>
+	  b parent class_ref 128258 // Object
+      end
+
+      attribute 128130 "timeAvoided"
+	private explicit_type "float"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 128258 "timeCanAvoid"
+	private explicit_type "float"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 128386 "timeRested"
+	private explicit_type "float"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 128514 "timeShouldRest"
+	private explicit_type "float"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      classrelation 128258 // leader (<unidirectional association>)
+	relation 128258 --->
+	  a role_name "leader" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 128258 // leader (<unidirectional association>)
+	  b parent class_ref 128258 // Object
+      end
+
+      operation 128130 "Human"
+	preserve_cpp_body_indent public explicit_return_type ""
+	nparams 1
+	  param in name "pos" type class_ref 128386 // Vector2
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${throw}{
+${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 128258 "getLeader"
+	preserve_cpp_body_indent public return_type class_ref 128258 // Object
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 128386 "setLeader"
+	preserve_cpp_body_indent public explicit_return_type "void"
+	nparams 1
+	  param inout name "newLead" type class_ref 128258 // Object
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} * ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 128514 "Update"
+	preserve_cpp_body_indent cpp_virtual cpp_override public explicit_return_type "void"
+	nparams 2
+	  param in name "nearby" explicit_type "std::vector<Object*>"
+	  param in name "deltaTime" explicit_type "float"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 138370 "IsDone"
+	preserve_cpp_body_indent cpp_virtual cpp_override public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 129026 // <association>
+	relation_ref 128898 // <association>
+      end
+    end
+
+    class 128258 "Object"
+      abstract visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      operation 128642 "Update"
+	abstract cpp_virtual public explicit_return_type "void"
+	nparams 2
+	  param in name "" explicit_type "std::vector<Object*>"
+	  param in name "" explicit_type "float"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
+      end
+
+      operation 138498 "IsDone"
+	abstract cpp_virtual public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
+      end
+
+      operation 128770 "GetPos"
+	cpp_inline public return_type class_ref 128386 // Vector2
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { return position; };
+"
+	
+	
+	
+	
+      end
+
+      classrelation 136066 // <dependency>
+	relation 135938 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 136066 // <dependency>
+	  b parent class_ref 128386 // Vector2
+      end
+    end
+
+    class 128386 "Vector2"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      attribute 128770 "_x"
+	private explicit_type "float"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 128898 "_y"
+	private explicit_type "float"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      operation 129794 "Vector2"
+	cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw}${abstract} {
+		_x = 0;
+		_y = 0;
+	};
+"
+	
+	
+	
+	
+      end
+
+      operation 129922 "Vector2"
+	cpp_inline public explicit_return_type ""
+	nparams 2
+	  param in name "x" explicit_type "float"
+	  param in name "y" explicit_type "float"
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${volatile}${throw}${abstract} {
+		_x = x;
+		_y = y;
+	};
+"
+	
+	
+	
+	
+      end
+
+      operation 130050 "x"
+	cpp_inline public explicit_return_type "float"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} {
+		return _x;
+	};
+"
+	
+	
+	
+	
+      end
+
+      operation 130178 "y"
+	cpp_inline public explicit_return_type "float"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} {
+		return _y;
+	};
+"
+	
+	
+	
+	
+      end
+
+      operation 130306 "operator +="
+	cpp_inline public return_type class_ref 128386 // Vector2
+	nparams 1
+	  param in name "right" type class_ref 128386 // Vector2
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract} {
+		this->_x += right.x();
+		this->_y += right.y();
+		return *this;
+	};
+"
+	
+	
+	
+	
+      end
+
+      operation 130434 "operator -="
+	cpp_inline public return_type class_ref 128386 // Vector2
+	nparams 1
+	  param in name "right" type class_ref 128386 // Vector2
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract} {
+		this->_x -= right.x();
+		this->_y -= right.y();
+		return *this;
+	};
+"
+	
+	
+	
+	
+      end
+
+      operation 130562 "operator *="
+	cpp_inline public return_type class_ref 128386 // Vector2
+	nparams 1
+	  param in name "right" explicit_type "float"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract} {
+		this->_x *= right;
+		this->_y *= right;
+		return *this;
+	};
+"
+	
+	
+	
+	
+      end
+
+      operation 130690 "SqrDistance"
+	class_operation cpp_inline public explicit_return_type "float"
+	nparams 2
+	  param in name "left" type class_ref 128386 // Vector2
+	  param in name "right" type class_ref 128386 // Vector2
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract} {
+		float o_x = left.x() - right.x();
+		float o_y = left.y() - right.y();
+		return (o_x * o_x) + (o_y * o_y);
+	};
+"
+	
+	
+	
+	
+      end
+
+      operation 130818 "SqrMagnitude"
+	cpp_inline public explicit_return_type "float"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} {
+		return (x() * x()) + (y() * y());
+	};
+"
+	
+	
+	
+	
+      end
+
+      operation 130946 "Magnitude"
+	cpp_inline public explicit_return_type "float"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} {
+		return sqrt(SqrMagnitude());
+	};
+"
+	
+	
+	
+	
+      end
+
+      operation 131074 "Normalize"
+	cpp_inline public return_type class_ref 128386 // Vector2
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} {
+		if (SqrMagnitude() > 0) {
+			*this *= (1 / Magnitude());
+			return *this;
+		}
+		else {
+			return *this;
+		}
+	};
+"
+	
+	
+	
+	
+      end
+
+      operation 131202 "ToString"
+	cpp_inline public explicit_return_type "std::string"
+	nparams 1
+	  param in name "digits" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract} {
+		return std::to_string(x()).substr(0, digits) + \":\" + std::to_string(y()).substr(0, digits);
+	};
+"
+	
+	
+	
+	
+      end
+    end
+
+    class 128514 "Player"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 128514 // <generalisation>
+	relation 128514 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 128514 // <generalisation>
+	  b parent class_ref 128258 // Object
+      end
+
+      attribute 128642 "speed"
+	private explicit_type "float"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      operation 128898 "Player"
+	preserve_cpp_body_indent public explicit_return_type ""
+	nparams 1
+	  param in name "pos" type class_ref 128386 // Vector2
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${throw}{
+${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 129026 "Update"
+	preserve_cpp_body_indent cpp_virtual cpp_override public explicit_return_type "void"
+	nparams 2
+	  param in name "objects" explicit_type "std::vector<Object*>"
+	  param in name "deltaTime" explicit_type "float"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 138626 "IsDone"
+	preserve_cpp_body_indent cpp_virtual cpp_override public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 129154 "SetMoveDir"
+	preserve_cpp_body_indent public explicit_return_type "void"
+	nparams 1
+	  param in name "moveVec" type class_ref 128386 // Vector2
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 128898 // <association>
+	relation 128898 ----
+	  a role_name "" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 128898 // <association>
+	  b role_name "" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 129026 // <association>
+      end
+
+      classrelation 135554 // <dependency>
+	relation 135426 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 135554 // <dependency>
+	  b parent class_ref 128258 // Object
+      end
+
+      classrelation 135810 // <dependency>
+	relation 135682 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 135810 // <dependency>
+	  b parent class_ref 128130 // Human
+      end
+
+      classrelation 135938 // <dependency>
+	relation 135810 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 135938 // <dependency>
+	  b parent class_ref 128386 // Vector2
+      end
+    end
+
+    class 128642 "Scene"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 128770 // objects (<unidirectional association>)
+	relation 128770 --->
+	  stereotype "std::vector"
+	  a role_name "objects" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}*> ${name}${value};
+"
+	    classrelation_ref 128770 // objects (<unidirectional association>)
+	  b parent class_ref 128258 // Object
+      end
+
+      operation 129282 "Scene"
+	preserve_cpp_body_indent public explicit_return_type ""
+	nparams 1
+	  param in name "objects" explicit_type "std::vector<Object*>"
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${throw}{
+${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 129410 "Update"
+	preserve_cpp_body_indent public explicit_return_type "void"
+	nparams 1
+	  param in name "deltaTimeMS" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 129538 "Size"
+	preserve_cpp_body_indent public explicit_return_type "float"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 129666 "GetObj"
+	preserve_cpp_body_indent public return_type class_ref 128258 // Object
+	nparams 1
+	  param in name "index" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 138754 "IsEnd"
+	preserve_cpp_body_indent public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+    end
+
+    classdiagram 128130 "mco1uml"
+      classdiagramsettings draw_all_relations no show_members_full_definition yes show_members_visibility yes member_max_width 0 end
+      size A-Landscape
+    end
+
+    class 135170 "IOinterface"
+      abstract visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      operation 138882 "DisplayStart"
+	abstract cpp_virtual public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
+      end
+
+      operation 139010 "DisplayLargeLevel"
+	abstract cpp_virtual public explicit_return_type "void"
+	nparams 2
+	  param in name "" type class_ref 128642 // Scene
+	  param in name "" type class_ref 128386 // Vector2
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
+      end
+
+      operation 139138 "DisplayLevelEnd"
+	abstract cpp_virtual public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
+      end
+
+      operation 139266 "DisplayScene"
+	abstract cpp_virtual public explicit_return_type "void"
+	nparams 2
+	  param in name "" type class_ref 128642 // Scene
+	  param in name "" type class_ref 128386 // Vector2
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
+      end
+
+      operation 139394 "GetMovementInput"
+	abstract cpp_virtual public return_type class_ref 128386 // Vector2
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
+      end
+
+      classrelation 135682 // <dependency>
+	relation 135554 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 135682 // <dependency>
+	  b parent class_ref 128642 // Scene
+      end
+    end
+  end
+
+  deploymentview 128130 "GDPROG3MCO1"
+    //deployment diagram settings
+    deploymentdiagramsettings
+     end
+    artifact 128130 "Human"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 128130 // Human
+      end
+    end
+
+    artifact 128258 "Object"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 128258 // Object
+      end
+    end
+
+    artifact 128386 "Player"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 128514 // Player
+      end
+    end
+
+    artifact 128514 "Scene"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 128642 // Scene
+      end
+    end
+
+    artifact 128642 "Vector2"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 128386 // Vector2
+      end
+    end
+
+    artifact 128770 "main"
+      stereotype "source"
+      cpp_src "int main()
+{
+	IOinterface* io = new ConsoleIO();
+
+	int level = 1;
+
+	io->DisplayStart();
+
+	while (true)
+	{
+		auto player = new Player(*new Vector2(0, 0));
+
+		vector<Object*> sceneobjs = {player};
+
+		for (int i_h = 0; i_h < level; i_h++)
+		{
+			int spawnRange = 7;
+			int i_h_x = (rand() % (spawnRange - (-spawnRange) + 1)) + (-spawnRange);
+			int i_h_y = (rand() % (spawnRange - (-spawnRange) + 1)) + (-spawnRange);
+			sceneobjs.push_back(new Human(*new Vector2(i_h_x, i_h_y)));
+		}
+
+		Scene newScene = *new Scene(sceneobjs);
+
+		bool playing = true;
+		thread DisplayThread(DisplayLoop, newScene, io, player);
+		thread UpdateThread(UpdateLoop, newScene, io, player);
+		thread MoveListenThread(MovePlayer, newScene, io, player);
+
+		DisplayThread.join();
+		UpdateThread.join();
+		MoveListenThread.join();
+
+		level++;
+	}
+}
+"
+      associated_elems
+      end
+    end
+
+    artifact 135298 "IOinterface"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 135170 // IOinterface
+      end
+    end
+  end
+end

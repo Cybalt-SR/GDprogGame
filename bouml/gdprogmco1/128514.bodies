@@ -1,0 +1,28 @@
+class Player
+!!!128898.cpp!!!	Player(in pos : Vector2)
+
+	this->position = pos;
+	this->speed = 1.6f;
+!!!129026.cpp!!!	Update(in objects : std::vector<Object*>, in deltaTime : float) : void
+
+	Vector2 *deltaMove = new Vector2(MoveDir.x(), MoveDir.y());
+	*deltaMove *= deltaTime * speed;
+
+	this->position += *deltaMove;
+
+	for (int i_o = 0; i_o < objects.size(); i_o++)
+	{
+		auto human = dynamic_cast<Human*>(objects[i_o]);
+
+		if (human != NULL && Vector2::SqrDistance(human->GetPos(), this->position) <= 0.7f * 0.7f) {
+			human->setLeader(this);
+		}
+	}
+
+	delete deltaMove;
+!!!138626.cpp!!!	IsDone() : bool
+
+	return true;
+!!!129154.cpp!!!	SetMoveDir(in moveVec : Vector2) : void
+
+	this->MoveDir = moveVec;
