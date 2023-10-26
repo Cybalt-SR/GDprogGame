@@ -1,10 +1,21 @@
 ﻿  ConsoleIO.cpp
-C:\Users\gabri\OneDrive\Documents\UP_docs\School\CPP projects school\GDPROG3MCO1\Vector2.h(56,14): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-C:\Users\gabri\OneDrive\Documents\UP_docs\School\CPP projects school\GDPROG3MCO1\ConsoleIO.h(14,2): warning C4091: 'static ': ignored on left of 'ConsoleIO' when no variable is declared
-C:\Users\gabri\OneDrive\Documents\UP_docs\School\CPP projects school\GDPROG3MCO1\ConsoleIO.cpp(49,15): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\gabri\OneDrive\Documents\UP_docs\School\CPP projects school\GDPROG3MCO1\ConsoleIO.cpp(53,39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\gabri\OneDrive\Documents\UP_docs\School\CPP projects school\GDPROG3MCO1\ConsoleIO.cpp(53,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\gabri\OneDrive\Documents\UP_docs\School\CPP projects school\GDproggame\GDprogGame\Vector2.h(56,14): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\gabri\OneDrive\Documents\UP_docs\School\CPP projects school\GDproggame\GDprogGame\ConsoleIO.h(14,2): warning C4091: 'static ': ignored on left of 'ConsoleIO' when no variable is declared
+C:\Users\gabri\OneDrive\Documents\UP_docs\School\CPP projects school\GDproggame\GDprogGame\ConsoleIO.cpp(49,15): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\gabri\OneDrive\Documents\UP_docs\School\CPP projects school\GDproggame\GDprogGame\ConsoleIO.cpp(53,39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\gabri\OneDrive\Documents\UP_docs\School\CPP projects school\GDproggame\GDprogGame\ConsoleIO.cpp(53,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  GDPROG3MCO1.cpp
+C:\Users\gabri\OneDrive\Documents\UP_docs\School\CPP projects school\GDproggame\GDprogGame\ConsoleIO.h(14,2): warning C4091: 'static ': ignored on left of 'ConsoleIO' when no variable is declared
+C:\Users\gabri\OneDrive\Documents\UP_docs\School\CPP projects school\GDproggame\GDprogGame\GDPROG3MCO1.cpp(78,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\gabri\OneDrive\Documents\UP_docs\School\CPP projects school\GDproggame\GDprogGame\GDPROG3MCO1.cpp(78,47): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Human.cpp
+C:\Users\gabri\OneDrive\Documents\UP_docs\School\CPP projects school\GDproggame\GDprogGame\Vector2.h(56,14): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\gabri\OneDrive\Documents\UP_docs\School\CPP projects school\GDproggame\GDprogGame\Human.cpp(37,17): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   Player.cpp
-C:\Users\gabri\OneDrive\Documents\UP_docs\School\CPP projects school\GDPROG3MCO1\Vector2.h(56,14): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\gabri\OneDrive\Documents\UP_docs\School\CPP projects school\GDproggame\GDprogGame\Vector2.h(56,14): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+  Scene.cpp
+C:\Users\gabri\OneDrive\Documents\UP_docs\School\CPP projects school\GDproggame\GDprogGame\Vector2.h(56,14): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\gabri\OneDrive\Documents\UP_docs\School\CPP projects school\GDproggame\GDprogGame\Scene.cpp(32,21): warning C4244: 'return': conversion from 'unsigned __int64' to 'float', possible loss of data
   Generating Code...
-  GDPROG3MCO1.vcxproj -> C:\Users\gabri\OneDrive\Documents\UP_docs\School\CPP projects school\GDPROG3MCO1\x64\Debug\GDPROG3MCO1.exe
+  LINK : C:\Users\gabri\OneDrive\Documents\UP_docs\School\CPP projects school\GDproggame\GDprogGame\x64\Debug\GDPROG3MCO1.exe not found or not built by the last incremental link; performing full link
+  GDPROG3MCO1.vcxproj -> C:\Users\gabri\OneDrive\Documents\UP_docs\School\CPP projects school\GDproggame\GDprogGame\x64\Debug\GDPROG3MCO1.exe

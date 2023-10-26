@@ -1,1 +1,2 @@
 C:\Users\gabri\OneDrive\Documents\UP_docs\School\CPP projects school\GDPROG3MCO1\x64\Debug\GDPROG3MCO1.exe
+C:\Users\gabri\OneDrive\Documents\UP_docs\School\CPP projects school\GDproggame\GDprogGame\x64\Debug\GDPROG3MCO1.exe
